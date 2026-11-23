@@ -1,0 +1,337 @@
+﻿<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-secondary": "#ffffff", "secondary": "#5c6058", "on-primary-fixed": "#01210d", "primary-fixed-dim": "#abd0b0", "primary": "#45664c", "inverse-on-surface": "#f0f1eb", "tertiary": "#855403", "secondary-fixed": "#e0e4da", "inverse-primary": "#abd0b0", "on-surface": "#191c19", "on-primary-fixed-variant": "#2d4e36", "on-error": "#ffffff", "outline": "#727971", "surface-bright": "#f8faf3", "on-surface-variant": "#424842", "surface": "#f8faf3", "on-background": "#191c19", "on-primary": "#ffffff", "on-error-container": "#93000a", "surface-variant": "#e1e3dd", "on-secondary-fixed-variant": "#444841", "on-secondary-fixed": "#191d17", "tertiary-container": "#d89a4a", "surface-container-lowest": "#ffffff", "primary-fixed": "#c6eccb", "primary-container": "#8baf91", "on-primary-container": "#22422b", "surface-dim": "#d9dbd4", "surface-tint": "#45664c", "inverse-surface": "#2e312d", "outline-variant": "#c2c8c0", "error-container": "#ffdad6", "background": "#f8faf3", "tertiary-fixed-dim": "#fcba66", "on-tertiary-container": "#563400", "surface-container-low": "#f3f4ee", "tertiary-fixed": "#ffddb8", "surface-container-high": "#e7e9e2", "secondary-fixed-dim": "#c4c8be", "error": "#ba1a1a", "on-secondary-container": "#62665e", "on-tertiary-fixed": "#2a1700", "surface-container-highest": "#e1e3dd", "surface-container": "#edefe8", "on-tertiary-fixed-variant": "#653e00", "on-tertiary": "#ffffff" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-xl": "1.75rem", "margin": "1.25rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-lg": "1.25rem", "space-md": "1rem", "gutter": "1rem" }, fontFamily: { "label-md": ["Inter"], "label-sm": ["Inter"], "body-sm": ["Inter"], "display": ["Manrope"], "headline-lg": ["Manrope"], "body-md": ["Inter"], "numeric-currency": ["Inter"], "body-lg": ["Inter"], "headline-sm": ["Manrope"] }, fontSize: { "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "500" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.04em", fontWeight: "600" }], "body-sm": ["13px", { lineHeight: "18px", letterSpacing: "0em", fontWeight: "400" }], "display": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "600" }], "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.015em", fontWeight: "600" }], "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "400" }], "numeric-currency": ["16px", { lineHeight: "22px", letterSpacing: "-0.01em", fontWeight: "600" }], "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "-0.005em", fontWeight: "400" }], "headline-sm": ["18px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" }] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#f8faf3;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 350,'GRAD' 0,'opsz' 24;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(25,28,25,0.03)] pt-safe"><div class="h-6 px-margin flex items-center justify-between text-on-surface select-none"><span class="font-label-sm text-label-sm tracking-tight">9:41</span><div class="flex items-center gap-space-xs text-on-surface"><span class="material-symbols-outlined text-[15px]">wifi</span><span class="material-symbols-outlined text-[15px]">signal_cellular_alt</span><span class="material-symbols-outlined text-[16px]">battery_full</span></div></div><div class="h-14 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-display">Expenses</span></div><div class="flex items-center gap-space-sm"><button aria-label="Notifications" class="w-11 h-11 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors active:scale-95"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-sm select-none"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full max-w-[680px] mx-auto pt-20 pb-28 px-margin bg-surface"><div class="flex flex-col w-full gap-space-lg select-none">
+<!-- Sub-Header & Vault Status Kicker -->
+<div class="flex flex-col gap-space-xs pt-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant/80">Homely • Secure Vault</span>
+<div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary-fixed/60 text-on-primary-fixed-variant">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-label-sm text-label-sm">Offline Only</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-1">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-display tracking-tight">Document Vault</h1>
+<div class="flex items-center gap-2 mt-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">28 Local records protected</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-primary font-medium">Synced On-Device</span>
+</div>
+</div>
+<button class="bg-primary-container text-on-primary-container font-label-md text-label-md px-3.5 py-2 rounded-full flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Upload</span>
+</button>
+</div>
+</div>
+<!-- Search & Storage Quota Dashboard Card -->
+<div class="w-full bg-surface-container-lowest rounded-[20px] p-space-md shadow-[0_1px_3px_rgba(25,28,25,0.03),0_4px_12px_rgba(25,28,25,0.02)] flex flex-col gap-space-md">
+<!-- Inset Search Input -->
+<div class="relative w-full flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">search</span>
+<input class="w-full h-11 pl-10 pr-10 rounded-full bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/70 font-body-sm text-body-sm focus:outline-none focus:bg-surface-container transition-colors" placeholder="Search invoices, warranties, insurance, RC..." type="text"/>
+<button aria-label="Filter documents" class="absolute right-2.5 w-7 h-7 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+<!-- On-Device Storage Barometer -->
+<div class="bg-surface-container-low/70 rounded-xl p-3 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">48.2 MB Local Space</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Zero Cloud Footprint</span>
+</div>
+<!-- Segmented Bar -->
+<div class="w-full h-2 rounded-full bg-surface-variant overflow-hidden flex">
+<div class="h-full bg-primary" style="width: 44%;" title="PDF Documents"></div>
+<div class="h-full bg-tertiary-container" style="width: 26%;" title="Images &amp; Receipts"></div>
+<div class="h-full bg-secondary" style="width: 14%;" title="Warranties"></div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-0.5">
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span>PDFs (21)</span>
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>Images (7)</span>
+</div>
+<span class="text-primary font-medium">AES-256</span>
+</div>
+</div>
+</div>
+<!-- Horizontal Scroll Filter Chips -->
+<div class="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-margin px-margin py-0.5">
+<button class="h-8 px-4 rounded-full bg-on-surface text-surface font-label-md text-label-md shrink-0 flex items-center justify-center shadow-xs">
+      All (28)
+    </button>
+<button class="h-8 px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md shrink-0 flex items-center gap-1.5 transition-colors shadow-[0_1px_2px_rgba(25,28,25,0.03)]">
+<span>Invoices</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container font-label-sm text-label-sm">10</span>
+</button>
+<button class="h-8 px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md shrink-0 flex items-center gap-1.5 transition-colors shadow-[0_1px_2px_rgba(25,28,25,0.03)]">
+<span>Warranties</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container font-label-sm text-label-sm">6</span>
+</button>
+<button class="h-8 px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md shrink-0 flex items-center gap-1.5 transition-colors shadow-[0_1px_2px_rgba(25,28,25,0.03)]">
+<span>Insurance</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container font-label-sm text-label-sm">4</span>
+</button>
+<button class="h-8 px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md shrink-0 flex items-center gap-1.5 transition-colors shadow-[0_1px_2px_rgba(25,28,25,0.03)]">
+<span>Vehicle RC</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container font-label-sm text-label-sm">4</span>
+</button>
+<button class="h-8 px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md shrink-0 flex items-center gap-1.5 transition-colors shadow-[0_1px_2px_rgba(25,28,25,0.03)]">
+<span>Service</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container font-label-sm text-label-sm">4</span>
+</button>
+</div>
+<!-- Section 1: Pinned & Critical Documents -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[17px] text-tertiary-container" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Pinned &amp; Critical</h2>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-semibold">2 Files</span>
+</div>
+<!-- Card 1: Honda City Insurance -->
+<div class="w-full bg-surface-container-lowest rounded-[20px] p-space-md shadow-[0_1px_3px_rgba(25,28,25,0.03),0_4px_12px_rgba(25,28,25,0.02)] flex flex-col gap-3">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-start gap-3 min-w-0">
+<div class="w-11 h-11 rounded-xl bg-error-container/50 text-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px]">picture_as_pdf</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-semibold text-on-surface truncate">Honda_City_Comprehensive_Insurance_2026.pdf</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Vehicle Insurance • ICICI Lombard • #IL-9920194</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed/70 text-on-primary-fixed-variant font-label-sm text-label-sm shrink-0 font-medium">Active</span>
+</div>
+<div class="flex items-center gap-2 flex-wrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[15px] text-primary">directions_car</span>
+<span>Honda City (KA 01 MJ 4290)</span>
+</div>
+<span class="text-on-surface-variant font-label-sm text-label-sm">Valid till 14 Aug 2027</span>
+</div>
+<div class="h-[1px] w-full bg-surface-variant/60 my-0.5"></div>
+<div class="flex items-center justify-between">
+<span class="font-numeric-currency text-body-sm text-on-surface-variant">1.4 MB • Encrypted Vault</span>
+<div class="flex items-center gap-1.5">
+<button aria-label="View document" class="w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface flex items-center justify-center transition-colors active:scale-90">
+<span class="material-symbols-outlined text-[19px]">visibility</span>
+</button>
+<button aria-label="Share document securely" class="w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface flex items-center justify-center transition-colors active:scale-90">
+<span class="material-symbols-outlined text-[19px]">ios_share</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Property Deed -->
+<div class="w-full bg-surface-container-lowest rounded-[20px] p-space-md shadow-[0_1px_3px_rgba(25,28,25,0.03),0_4px_12px_rgba(25,28,25,0.02)] flex flex-col gap-3">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-start gap-3 min-w-0">
+<div class="w-11 h-11 rounded-xl bg-error-container/50 text-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px]">picture_as_pdf</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-semibold text-on-surface truncate">Apartment_Sale_Deed_Registry.pdf</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Property &amp; Housing • Sub-Registrar Indiranagar</span>
+</div>
+</div>
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm shrink-0">
+<span class="material-symbols-outlined text-[13px]">key</span>
+<span>Locked</span>
+</div>
+</div>
+<div class="flex items-center gap-2 flex-wrap">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[15px] text-primary">apartment</span>
+<span>Unit 402, Palm Grove Apt</span>
+</div>
+<span class="text-on-surface-variant font-label-sm text-label-sm">Registered 12 Jan 2022</span>
+</div>
+<div class="h-[1px] w-full bg-surface-variant/60 my-0.5"></div>
+<div class="flex items-center justify-between">
+<span class="font-numeric-currency text-body-sm text-on-surface-variant">4.8 MB • Biometric Auth Required</span>
+<div class="flex items-center gap-1.5">
+<button aria-label="View document" class="w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface flex items-center justify-center transition-colors active:scale-90">
+<span class="material-symbols-outlined text-[19px]">visibility</span>
+</button>
+<button aria-label="Share document securely" class="w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface flex items-center justify-center transition-colors active:scale-90">
+<span class="material-symbols-outlined text-[19px]">ios_share</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Appliance Warranties & Invoices -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">verified</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Appliance Warranties &amp; Invoices</h2>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-semibold">3 Files</span>
+</div>
+<!-- Card 3: LG Refrigerator -->
+<div class="w-full bg-surface-container-lowest rounded-[20px] p-space-md shadow-[0_1px_3px_rgba(25,28,25,0.03),0_4px_12px_rgba(25,28,25,0.02)] flex flex-col gap-2.5">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-start gap-3 min-w-0">
+<div class="w-10 h-10 rounded-xl bg-error-container/40 text-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">description</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-semibold text-on-surface truncate">LG_Refrigerator_Original_Invoice_Croma.pdf</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Croma Retail Store • Inv #CR-88190</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</div>
+<div class="flex items-center justify-between text-body-sm pt-1">
+<div class="flex items-center gap-2">
+<span class="font-medium text-on-surface">LG 423L Refrigerator</span>
+<span class="text-on-surface-variant/50">•</span>
+<span class="font-numeric-currency text-on-surface-variant">₹52,000</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">412 KB</span>
+</div>
+</div>
+<!-- Card 4: Kent RO -->
+<div class="w-full bg-surface-container-lowest rounded-[20px] p-space-md shadow-[0_1px_3px_rgba(25,28,25,0.03),0_4px_12px_rgba(25,28,25,0.02)] flex flex-col gap-2.5">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-start gap-3 min-w-0">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed/60 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">image</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-semibold text-on-surface truncate">Kent_RO_Warranty_Registration_Slip.jpg</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Official Manufacturer AMC Card</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</div>
+<div class="flex items-center justify-between text-body-sm pt-1">
+<div class="flex items-center gap-1.5">
+<span class="font-medium text-on-surface">Kent Grand Plus RO</span>
+<span class="px-2 py-0.2 rounded-full bg-primary-fixed/60 text-on-primary-fixed-variant font-label-sm text-label-sm font-medium">Valid till Dec 2026</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">1.8 MB</span>
+</div>
+</div>
+<!-- Card 5: AppleCare -->
+<div class="w-full bg-surface-container-lowest rounded-[20px] p-space-md shadow-[0_1px_3px_rgba(25,28,25,0.03),0_4px_12px_rgba(25,28,25,0.02)] flex flex-col gap-2.5">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-start gap-3 min-w-0">
+<div class="w-10 h-10 rounded-xl bg-error-container/40 text-error flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">description</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-semibold text-on-surface truncate">AppleCare_MacBook_Pro_Certificate.pdf</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Apple India Pvt Ltd • Agmt #AC-299104</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</div>
+<div class="flex items-center justify-between text-body-sm pt-1">
+<div class="flex items-center gap-1.5">
+<span class="font-medium text-on-surface">MacBook Pro 14" M3</span>
+<span class="px-2 py-0.2 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Exp 15 Nov 2027</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">220 KB</span>
+</div>
+</div>
+</div>
+<!-- Section 3: Recent Bills & Receipts -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">receipt_long</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Recent Bills &amp; Receipts</h2>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-semibold">This Month</span>
+</div>
+<!-- Things-3 Style Clean Row Item 1 -->
+<div class="w-full bg-surface-container-lowest rounded-[16px] px-space-md py-3 shadow-[0_1px_3px_rgba(25,28,25,0.02)] flex items-center justify-between gap-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined text-[17px]">bolt</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-medium text-on-surface truncate">Torrent_Power_Oct_2026_Bill.pdf</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Paid via UPI • 20 Nov 2026</span>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<div class="text-right">
+<div class="font-numeric-currency text-body-md font-semibold text-on-surface">₹4,350</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">342 KB</div>
+</div>
+<button class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[16px]">download</span>
+</button>
+</div>
+</div>
+<!-- Things-3 Style Clean Row Item 2 -->
+<div class="w-full bg-surface-container-lowest rounded-[16px] px-space-md py-3 shadow-[0_1px_3px_rgba(25,28,25,0.02)] flex items-center justify-between gap-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined text-[17px]">build</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-medium text-on-surface truncate">Whitefield_Honda_30k_Service_Invoice.pdf</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Scheduled Checkup • 15 May 2026</span>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<div class="text-right">
+<div class="font-numeric-currency text-body-md font-semibold text-on-surface">₹4,850</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">510 KB</div>
+</div>
+<button class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[16px]">download</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tranquil Security Note Card -->
+<div class="w-full rounded-[20px] bg-surface-container-low p-space-md flex items-center gap-3 text-on-surface-variant">
+<div class="w-9 h-9 rounded-full bg-primary-fixed/80 text-on-primary-fixed-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Encrypted On-Device Vault</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Your documents never touch an external server. Android Biometric Passkey active.</span>
+</div>
+</div>
+</div>
+<script>
+  // Filter chips active micro-interaction
+  document.querySelectorAll('.no-scrollbar button').forEach(button => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('.no-scrollbar button').forEach(b => {
+        b.className = 'h-8 px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md shrink-0 flex items-center gap-1.5 transition-colors shadow-[0_1px_2px_rgba(25,28,25,0.03)]';
+      });
+      button.className = 'h-8 px-4 rounded-full bg-on-surface text-surface font-label-md text-label-md shrink-0 flex items-center justify-center shadow-xs';
+    });
+  });
+</script></main><div class="fixed bottom-0 w-full z-50 pointer-events-none pb-safe"><div class="relative max-w-[680px] mx-auto px-space-xs"><div class="absolute -top-7 left-1/2 -translate-x-1/2 pointer-events-auto z-20"><button aria-label="Add item" class="w-14 h-14 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shadow-[0_8px_16px_rgba(139,175,145,0.35)] transition-transform duration-150 active:scale-95 hover:brightness-105"><span class="material-symbols-outlined text-[28px]">add</span></button></div><nav class="pointer-events-auto bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-2px_16px_rgba(25,28,25,0.04)] rounded-t-xl" data-active-classes="text-on-surface font-semibold"><div class="h-16 px-space-xs flex items-center justify-between"><a class="flex-1 h-full flex flex-col items-center justify-center gap-[2px] text-on-surface-variant hover:text-on-surface transition-all active:scale-95" data-path="home" href="#"><span class="material-symbols-outlined text-[22px]">cottage</span><span class="font-label-sm text-label-sm">Home</span></a><a class="flex-1 h-full flex flex-col items-center justify-center gap-[2px] text-on-surface-variant hover:text-on-surface transition-all active:scale-95" data-path="inventory" href="#"><span class="material-symbols-outlined text-[22px]">inventory_2</span><span class="font-label-sm text-label-sm">Inventory</span></a><div class="flex-1 h-full flex flex-col items-center justify-end pb-2 select-none"><span class="font-label-sm text-label-sm text-on-surface-variant/60">Add</span></div><a class="flex-1 h-full flex flex-col items-center justify-center gap-[2px] text-on-surface-variant hover:text-on-surface transition-all active:scale-95" data-path="calendar" href="#"><span class="material-symbols-outlined text-[22px]">calendar_today</span><span class="font-label-sm text-label-sm">Calendar</span></a><a class="flex-1 h-full flex flex-col items-center justify-center gap-[2px] text-on-surface-variant hover:text-on-surface transition-all active:scale-95" data-path="expenses" href="#"><span class="material-symbols-outlined text-[22px]">account_balance_wallet</span><span class="font-label-sm text-label-sm">Expenses</span><span class="w-1 h-1 rounded-full bg-primary-container absolute bottom-1.5"></span></a><a class="flex-1 h-full flex flex-col items-center justify-center gap-[2px] text-on-surface-variant hover:text-on-surface transition-all active:scale-95" data-path="more" href="#"><span class="material-symbols-outlined text-[22px]">more_horiz</span><span class="font-label-sm text-label-sm">More</span></a></div></nav></div></div></body></html>

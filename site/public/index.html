@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOMELY – Android Design System & Interactive Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            light: {
+              bg: '#F7F7F2',
+              secondary: '#EFEFE8',
+              card: '#FFFFFF',
+              border: '#E7E8E1',
+              primary: '#20231F',
+              muted: '#777B73',
+              accent: '#8BAF91',
+              accentSoft: '#E3EDE5',
+              warning: '#D48D3B',
+              danger: '#D96B6B'
+            },
+            dark: {
+              bg: '#151714',
+              secondary: '#1D211D',
+              card: '#222720',
+              border: '#343A33',
+              primary: '#F2F3ED',
+              muted: '#A1A79E',
+              accent: '#9BBDA0',
+              accentSoft: '#263428',
+              warning: '#E8A558',
+              danger: '#E57D7D'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          boxShadow: {
+            'phone': '0 25px 60px -15px rgba(0, 0, 0, 0.25), 0 0 0 12px #262a28, 0 0 0 14px #3d423f',
+            'phone-dark': '0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 12px #101210, 0 0 0 14px #242923',
+            'soft': '0 4px 20px -2px rgba(32, 35, 31, 0.05)',
+            'card-hover': '0 12px 32px -4px rgba(32, 35, 31, 0.08)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(139, 175, 145, 0.35);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(139, 175, 145, 0.6);
+    }
+    .phone-aspect {
+      width: 393px;
+      height: 852px;
+      max-height: 90vh;
+    }
+    @media (max-width: 480px) {
+      .phone-aspect {
+        width: 100%;
+        height: 780px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-light-primary dark:text-dark-primary font-sans transition-colors duration-300 min-h-screen flex flex-col">
+
+  <!-- TOP HEADER / BRAND BAR -->
+  <header class="border-b border-light-border dark:border-dark-border bg-light-card/80 dark:bg-dark-card/80 backdrop-blur-md sticky top-0 z-50 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo & Tagline -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-light-accent dark:bg-dark-accent flex items-center justify-center text-white dark:text-dark-bg shadow-sm">
+          <!-- House Minimal Geometric SVG Logo -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 10.5L12 3l9 7.5V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-xl tracking-tight text-light-primary dark:text-dark-primary">HOMELY</span>
+            <span class="text-[10px] tracking-widest font-mono uppercase px-2 py-0.5 rounded-full bg-light-secondary dark:bg-dark-secondary text-light-muted dark:text-dark-muted font-medium">ANDROID M3</span>
+          </div>
+          <p class="text-xs text-light-muted dark:text-dark-muted hidden sm:block">"Your home. Your data. Your control."</p>
+        </div>
+      </div>
+
+      <!-- Center Navigation Tabs -->
+      <nav class="hidden md:flex items-center gap-1 bg-light-secondary dark:bg-dark-secondary p-1 rounded-xl border border-light-border dark:border-dark-border">
+        <button onclick="switchTab('simulator')" id="tab-btn-simulator" class="tab-btn px-4 py-1.5 rounded-lg text-sm font-medium transition-all bg-light-card dark:bg-dark-card text-light-primary dark:text-dark-primary shadow-sm flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">smartphone</span>
+          <span>Simulator</span>
+        </button>
+        <button onclick="switchTab('gallery')" id="tab-btn-gallery" class="tab-btn px-4 py-1.5 rounded-lg text-sm font-medium transition-all text-light-muted dark:text-dark-muted hover:text-light-primary dark:hover:text-dark-primary flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">grid_view</span>
+          <span>All 15 Screens</span>
+        </button>
+        <button onclick="switchTab('system')" id="tab-btn-system" class="tab-btn px-4 py-1.5 rounded-lg text-sm font-medium transition-all text-light-muted dark:text-dark-muted hover:text-light-primary dark:hover:text-dark-primary flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">palette</span>
+          <span>Design System</span>
+        </button>
+        <button onclick="switchTab('flutter')" id="tab-btn-flutter" class="tab-btn px-4 py-1.5 rounded-lg text-sm font-medium transition-all text-light-muted dark:text-dark-muted hover:text-light-primary dark:hover:text-dark-primary flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">code</span>
+          <span>Flutter Handoff</span>
+        </button>
+      </nav>
+
+      <!-- Right Controls: Theme Toggle & Quick Actions -->
+      <div class="flex items-center gap-3">
+        <!-- Currency Selector Dropdown -->
+        <div class="relative" id="currency-menu-container">
+          <button id="currency-toggle" onclick="toggleCurrencyMenu(event)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-light-border dark:border-dark-border bg-light-card dark:bg-dark-card text-light-primary dark:text-dark-primary text-xs font-semibold hover:bg-light-secondary dark:hover:bg-dark-secondary transition-all" title="Select Household Currency">
+            <span class="material-symbols-outlined text-[16px] text-light-accent dark:text-dark-accent">payments</span>
+            <span id="current-currency-symbol" class="font-bold">₹</span>
+            <span id="current-currency-code" class="text-light-muted dark:text-dark-muted font-mono text-[11px]">INR</span>
+            <span class="material-symbols-outlined text-[14px] text-light-muted">expand_more</span>
+          </button>
+          <!-- Currency Dropdown Menu -->
+          <div id="currency-dropdown" class="hidden absolute right-0 mt-2 w-60 rounded-2xl bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border shadow-xl py-2 z-50">
+            <div class="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-light-muted dark:text-dark-muted flex items-center justify-between">
+              <span>Household Currency</span>
+              <span class="text-[9px] bg-light-secondary dark:bg-dark-secondary px-1.5 py-0.5 rounded text-light-accent dark:text-dark-accent font-bold">OFFLINE</span>
+            </div>
+            <div class="max-h-64 overflow-y-auto space-y-0.5 px-1.5" id="currency-options-list">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Light / Dark Switch -->
+        <button id="theme-toggle" onclick="toggleTheme()" class="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-light-border dark:border-dark-border bg-light-card dark:bg-dark-card text-light-primary dark:text-dark-primary text-xs font-medium hover:bg-light-secondary dark:hover:bg-dark-secondary transition-all">
+          <span class="material-symbols-outlined text-[18px] text-amber-500 dark:hidden">light_mode</span>
+          <span class="material-symbols-outlined text-[18px] text-emerald-300 hidden dark:inline">dark_mode</span>
+          <span id="theme-text">Light Mode</span>
+        </button>
+
+        <a href="FLUTTER_HANDOFF.md" target="_blank" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg text-xs font-semibold hover:opacity-90 transition-opacity">
+          <span class="material-symbols-outlined text-[16px]">download</span>
+          <span>Handoff Spec</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN TABBED CONTENT AREA -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: DEVICE SIMULATOR VIEW (DEFAULT)     -->
+    <!-- ========================================== -->
+    <section id="tab-content-simulator" class="flex-1 flex flex-col lg:flex-row gap-8 items-start justify-center">
+      
+      <!-- LEFT / SIDEBAR SCREEN SELECTOR -->
+      <aside class="w-full lg:w-80 flex-shrink-0 flex flex-col gap-4">
+        
+        <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-2xl p-4 shadow-soft">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-display font-bold text-sm tracking-tight text-light-primary dark:text-dark-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-light-accent dark:text-dark-accent text-[20px]">layers</span>
+              Application Screens (15)
+            </h2>
+            <span class="text-[11px] font-mono text-light-muted dark:text-dark-muted bg-light-secondary dark:bg-dark-secondary px-2 py-0.5 rounded-full">15 of 15 Ready</span>
+          </div>
+
+          <p class="text-xs text-light-muted dark:text-dark-muted mb-4 leading-relaxed">
+            Select any screen to view it live in the Android phone simulator. All screens follow offline-first local architecture.
+          </p>
+
+          <!-- Screens List -->
+          <div class="space-y-1.5 max-h-[580px] overflow-y-auto pr-1" id="screen-selector-list">
+            <!-- Items populated dynamically by JS -->
+          </div>
+        </div>
+
+        <!-- Quick Interaction Triggers Panel -->
+        <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-2xl p-4 shadow-soft">
+          <h3 class="font-display font-semibold text-xs tracking-tight text-light-primary dark:text-dark-primary mb-2.5 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-light-accent dark:text-dark-accent">touch_app</span>
+            Interaction States & Overlays
+          </h3>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="openModal('quick-add')" class="text-left p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-[11px] font-semibold text-light-primary dark:text-dark-primary flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px] text-light-accent">add_circle</span>
+                Quick-Add Sheet
+              </span>
+              <span class="text-[10px] text-light-muted dark:text-dark-muted">5-action bottom sheet</span>
+            </button>
+
+            <button onclick="openModal('mark-paid')" class="text-left p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-[11px] font-semibold text-light-primary dark:text-dark-primary flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span>
+                Mark as Paid
+              </span>
+              <span class="text-[10px] text-light-muted dark:text-dark-muted">Confirmation & receipt</span>
+            </button>
+
+            <button onclick="openModal('delete-confirm')" class="text-left p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-[11px] font-semibold text-light-danger dark:text-dark-danger flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">delete</span>
+                Delete Dialog
+              </span>
+              <span class="text-[10px] text-light-muted dark:text-dark-muted">Destructive action check</span>
+            </button>
+
+            <button onclick="triggerToast('Cloud sync disabled: HOMELY operates 100% offline.')" class="text-left p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-[11px] font-semibold text-light-primary dark:text-dark-primary flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px] text-blue-500">info</span>
+                Offline Toast
+              </span>
+              <span class="text-[10px] text-light-muted dark:text-dark-muted">Transient notification</span>
+            </button>
+
+            <button onclick="openModal('currency')" class="text-left p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary hover:border-light-accent dark:hover:border-dark-accent transition-colors col-span-2">
+              <span class="block text-[11px] font-semibold text-light-primary dark:text-dark-primary flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px] text-amber-500">payments</span>
+                Switch Currency
+              </span>
+              <span class="text-[10px] text-light-muted dark:text-dark-muted">Instant conversion across simulator (₹, $, €, £, etc.)</span>
+            </button>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- CENTER: ANDROID PHONE MOCKUP FRAME -->
+      <div class="flex-1 flex flex-col items-center justify-center">
+        
+        <!-- Screen Header Info Banner -->
+        <div class="mb-4 flex items-center justify-between w-full max-w-[393px] px-2">
+          <div>
+            <span id="active-screen-category" class="text-[11px] font-mono uppercase tracking-wider text-light-accent dark:text-dark-accent font-semibold">Screen 01</span>
+            <h3 id="active-screen-title" class="text-base font-display font-bold text-light-primary dark:text-dark-primary">Home Dashboard</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <a id="open-standalone-btn" href="screen_01_home.html" target="_blank" class="p-1.5 rounded-lg border border-light-border dark:border-dark-border bg-light-card dark:bg-dark-card text-light-muted hover:text-light-primary dark:text-dark-muted dark:hover:text-dark-primary transition-colors" title="Open full screen in new tab">
+              <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+            </a>
+            <button onclick="reloadFrame()" class="p-1.5 rounded-lg border border-light-border dark:border-dark-border bg-light-card dark:bg-dark-card text-light-muted hover:text-light-primary dark:text-dark-muted dark:hover:text-dark-primary transition-colors" title="Reload screen">
+              <span class="material-symbols-outlined text-[18px]">refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Android Hardware Chassis -->
+        <div class="relative phone-aspect rounded-[48px] bg-white dark:bg-[#151714] shadow-phone dark:shadow-phone-dark overflow-hidden flex flex-col border-[4px] border-[#20231F] dark:border-[#343A33]">
+          
+          <!-- Android Status Bar (9:41 AM, 5G, Wi-Fi, Battery) -->
+          <div class="h-9 px-6 bg-transparent flex items-center justify-between text-xs font-semibold text-light-primary dark:text-dark-primary z-30 select-none pt-1">
+            <span class="text-[13px] tracking-tight font-sans">9:41</span>
+            
+            <!-- Dynamic Island / Punch Hole Camera -->
+            <div class="w-20 h-4 bg-black rounded-full mx-auto flex items-center justify-center">
+              <div class="w-2.5 h-2.5 rounded-full bg-[#1A1A1A] mr-2"></div>
+            </div>
+
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="material-symbols-outlined text-[15px]">signal_cellular_4_bar</span>
+              <span class="material-symbols-outlined text-[15px]">wifi</span>
+              <span class="material-symbols-outlined text-[18px]">battery_charging_full</span>
+            </div>
+          </div>
+
+          <!-- Live Screen Iframe -->
+          <div class="flex-1 w-full relative overflow-hidden bg-light-bg dark:bg-dark-bg">
+            <iframe id="screen-iframe" src="screen_01_home.html" class="w-full h-full border-0 absolute inset-0 select-none"></iframe>
+          </div>
+
+          <!-- Android Bottom Gesture Handle -->
+          <div class="h-5 w-full bg-light-card/90 dark:bg-dark-card/90 backdrop-blur flex items-center justify-center z-30 pointer-events-none pb-1">
+            <div class="w-32 h-1 bg-light-primary/30 dark:bg-dark-primary/30 rounded-full"></div>
+          </div>
+
+        </div>
+
+        <!-- Screen Note -->
+        <p class="mt-4 text-xs text-light-muted dark:text-dark-muted text-center max-w-sm">
+          High-fidelity Android 15 layout (393 × 852 dp viewport). Designed with Material 3 tokens, 20px card radiuses, and serene typography.
+        </p>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: GALLERY OF ALL 15 SCREENS           -->
+    <!-- ========================================== -->
+    <section id="tab-content-gallery" class="hidden flex-1 flex flex-col gap-6">
+      
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-light-border dark:border-dark-border pb-4">
+        <div>
+          <h2 class="font-display font-bold text-2xl text-light-primary dark:text-dark-primary">All 15 Application Screens</h2>
+          <p class="text-sm text-light-muted dark:text-dark-muted mt-1">
+            Complete high-fidelity Android mobile suite generated with Stitch MCP under the Serene Domesticity design system.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono px-3 py-1 rounded-full bg-light-accentSoft dark:bg-dark-accentSoft text-light-accent dark:text-dark-accent font-semibold">15 / 15 Screens Completed</span>
+        </div>
+      </div>
+
+      <!-- Screen Grid (3 columns on desktop) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-grid">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: DESIGN SYSTEM & TOKENS              -->
+    <!-- ========================================== -->
+    <section id="tab-content-system" class="hidden flex-1 flex flex-col gap-8">
+      
+      <div class="border-b border-light-border dark:border-dark-border pb-4">
+        <h2 class="font-display font-bold text-2xl text-light-primary dark:text-dark-primary">Design System & Semantic Tokens</h2>
+        <p class="text-sm text-light-muted dark:text-dark-muted mt-1">
+          The Serene Domesticity design language synthesized in <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-light-secondary dark:bg-dark-secondary">DESIGN.md</code>.
+        </p>
+      </div>
+
+      <!-- Color Palette Specimen -->
+      <div class="space-y-6">
+        <h3 class="font-display font-bold text-lg text-light-primary dark:text-dark-primary flex items-center gap-2">
+          <span class="material-symbols-outlined text-light-accent dark:text-dark-accent">palette</span>
+          Color Architecture (Light vs Dark Mode)
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Light Theme Swatches -->
+          <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-2xl p-5 shadow-soft">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-display font-semibold text-sm text-light-primary dark:text-dark-primary">Light Theme (Warm Oatmeal Plaster)</h4>
+              <span class="text-[10px] font-mono bg-light-secondary dark:bg-dark-secondary px-2 py-0.5 rounded text-light-muted dark:text-dark-muted">Standard</span>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="rounded-xl border border-light-border p-3 flex flex-col gap-2" style="background-color: #F7F7F2;">
+                <span class="text-[11px] font-bold text-[#20231F]">Main Canvas</span>
+                <span class="font-mono text-[10px] text-[#777B73]">#F7F7F2</span>
+              </div>
+              <div class="rounded-xl border border-light-border p-3 flex flex-col gap-2" style="background-color: #FFFFFF;">
+                <span class="text-[11px] font-bold text-[#20231F]">Card Surface</span>
+                <span class="font-mono text-[10px] text-[#777B73]">#FFFFFF</span>
+              </div>
+              <div class="rounded-xl border border-light-border p-3 flex flex-col gap-2" style="background-color: #8BAF91;">
+                <span class="text-[11px] font-bold text-white">Sage Accent</span>
+                <span class="font-mono text-[10px] text-white/90">#8BAF91</span>
+              </div>
+              <div class="rounded-xl border border-light-border p-3 flex flex-col gap-2" style="background-color: #EFEFE8;">
+                <span class="text-[11px] font-bold text-[#20231F]">Secondary</span>
+                <span class="font-mono text-[10px] text-[#777B73]">#EFEFE8</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dark Theme Swatches -->
+          <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-2xl p-5 shadow-soft">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-display font-semibold text-sm text-light-primary dark:text-dark-primary">Dark Theme (Deep Obsidian Slate)</h4>
+              <span class="text-[10px] font-mono bg-light-secondary dark:bg-dark-secondary px-2 py-0.5 rounded text-light-muted dark:text-dark-muted">Intentional Palette</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="rounded-xl border border-[#343A33] p-3 flex flex-col gap-2" style="background-color: #151714;">
+                <span class="text-[11px] font-bold text-[#F2F3ED]">Main Canvas</span>
+                <span class="font-mono text-[10px] text-[#A1A79E]">#151714</span>
+              </div>
+              <div class="rounded-xl border border-[#343A33] p-3 flex flex-col gap-2" style="background-color: #222720;">
+                <span class="text-[11px] font-bold text-[#F2F3ED]">Card Surface</span>
+                <span class="font-mono text-[10px] text-[#A1A79E]">#222720</span>
+              </div>
+              <div class="rounded-xl border border-[#343A33] p-3 flex flex-col gap-2" style="background-color: #9BBDA0;">
+                <span class="text-[11px] font-bold text-[#151714]">Luminous Sage</span>
+                <span class="font-mono text-[10px] text-[#151714]">#9BBDA0</span>
+              </div>
+              <div class="rounded-xl border border-[#343A33] p-3 flex flex-col gap-2" style="background-color: #1D211D;">
+                <span class="text-[11px] font-bold text-[#F2F3ED]">Secondary</span>
+                <span class="font-mono text-[10px] text-[#A1A79E]">#1D211D</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Typography & Components Specimen -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Typography -->
+        <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-2xl p-5 shadow-soft space-y-4">
+          <h4 class="font-display font-bold text-sm text-light-primary dark:text-dark-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-light-accent dark:text-dark-accent">text_fields</span>
+            Typography Scale (Manrope & Inter)
+          </h4>
+
+          <div class="space-y-3">
+            <div class="border-b border-light-border dark:border-dark-border pb-2">
+              <span class="text-2xl font-display font-bold">Display Large 32px</span>
+              <p class="text-[11px] font-mono text-light-muted dark:text-dark-muted">Manrope 700 / -0.8px tracking / Section heroes</p>
+            </div>
+            <div class="border-b border-light-border dark:border-dark-border pb-2">
+              <span class="text-lg font-display font-semibold">Headline Large 24px</span>
+              <p class="text-[11px] font-mono text-light-muted dark:text-dark-muted">Manrope 600 / -0.4px tracking / Card headers</p>
+            </div>
+            <div class="border-b border-light-border dark:border-dark-border pb-2">
+              <span class="text-sm font-sans font-medium text-light-primary dark:text-dark-primary">Body Medium 14px</span>
+              <p class="text-[11px] font-mono text-light-muted dark:text-dark-muted">Inter 400 / 20px line-height / Core metadata</p>
+            </div>
+            <div>
+              <span class="text-base font-mono font-semibold tracking-tight text-light-primary dark:text-dark-primary">₹14,850.00 (Tabular Numbers)</span>
+              <p class="text-[11px] font-mono text-light-muted dark:text-dark-muted">Inter Tabular / Zero font jitter for currency</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8-Point Spacing & Radii -->
+        <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-2xl p-5 shadow-soft space-y-4">
+          <h4 class="font-display font-bold text-sm text-light-primary dark:text-dark-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-light-accent dark:text-dark-accent">straighten</span>
+            Geometry & Spatial System
+          </h4>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-light-secondary dark:bg-dark-secondary border border-light-border dark:border-dark-border">
+              <span class="font-bold block text-sm">20px Radius</span>
+              <span class="text-light-muted dark:text-dark-muted">Card containers, modal sheets, and preview dialogs</span>
+            </div>
+            <div class="p-3 rounded-xl bg-light-secondary dark:bg-dark-secondary border border-light-border dark:border-dark-border">
+              <span class="font-bold block text-sm">999px Full Pill</span>
+              <span class="text-light-muted dark:text-dark-muted">Status tags, category filters, and quick action chips</span>
+            </div>
+            <div class="p-3 rounded-xl bg-light-secondary dark:bg-dark-secondary border border-light-border dark:border-dark-border">
+              <span class="font-bold block text-sm">8-Point Grid</span>
+              <span class="text-light-muted dark:text-dark-muted">4dp, 8dp, 12dp, 16dp, 20dp, 24dp, 32dp rhythm</span>
+            </div>
+            <div class="p-3 rounded-xl bg-light-secondary dark:bg-dark-secondary border border-light-border dark:border-dark-border">
+              <span class="font-bold block text-sm">Offline-First</span>
+              <span class="text-light-muted dark:text-dark-muted">Zero cloud dependencies. On-device local SQLite store</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Currency & Precision Architecture -->
+        <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-2xl p-5 shadow-soft space-y-4 md:col-span-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-display font-bold text-sm text-light-primary dark:text-dark-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-light-accent dark:text-dark-accent">payments</span>
+              Multi-Currency System & Integer Minor Unit Storage
+            </h4>
+            <span class="text-[10px] font-mono bg-light-secondary dark:bg-dark-secondary px-2 py-0.5 rounded text-light-accent dark:text-dark-accent font-bold">ZERO IEEE 754 JITTER</span>
+          </div>
+          <p class="text-xs text-light-muted dark:text-dark-muted">
+            HOMELY stores all finances as 64-bit integer minor units (paise, cents, pence, fils, sen) to ensure 100% precision. Users can switch their household currency at any time from Settings or the top control bar.
+          </p>
+
+          <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-2.5 text-center">
+            <div onclick="setCurrency('INR')" class="p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-base font-bold text-light-accent dark:text-dark-accent">₹</span>
+              <span class="block font-mono text-[11px] font-bold text-light-primary dark:text-dark-primary">INR</span>
+              <span class="block text-[9px] text-light-muted dark:text-dark-muted">Rupee</span>
+            </div>
+            <div onclick="setCurrency('USD')" class="p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-base font-bold text-light-accent dark:text-dark-accent">$</span>
+              <span class="block font-mono text-[11px] font-bold text-light-primary dark:text-dark-primary">USD</span>
+              <span class="block text-[9px] text-light-muted dark:text-dark-muted">Dollar</span>
+            </div>
+            <div onclick="setCurrency('EUR')" class="p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-base font-bold text-light-accent dark:text-dark-accent">€</span>
+              <span class="block font-mono text-[11px] font-bold text-light-primary dark:text-dark-primary">EUR</span>
+              <span class="block text-[9px] text-light-muted dark:text-dark-muted">Euro</span>
+            </div>
+            <div onclick="setCurrency('GBP')" class="p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-base font-bold text-light-accent dark:text-dark-accent">£</span>
+              <span class="block font-mono text-[11px] font-bold text-light-primary dark:text-dark-primary">GBP</span>
+              <span class="block text-[9px] text-light-muted dark:text-dark-muted">Pound</span>
+            </div>
+            <div onclick="setCurrency('AED')" class="p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-base font-bold text-light-accent dark:text-dark-accent">د.إ</span>
+              <span class="block font-mono text-[11px] font-bold text-light-primary dark:text-dark-primary">AED</span>
+              <span class="block text-[9px] text-light-muted dark:text-dark-muted">Dirham</span>
+            </div>
+            <div onclick="setCurrency('CAD')" class="p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-base font-bold text-light-accent dark:text-dark-accent">C$</span>
+              <span class="block font-mono text-[11px] font-bold text-light-primary dark:text-dark-primary">CAD</span>
+              <span class="block text-[9px] text-light-muted dark:text-dark-muted">Dollar</span>
+            </div>
+            <div onclick="setCurrency('AUD')" class="p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-base font-bold text-light-accent dark:text-dark-accent">A$</span>
+              <span class="block font-mono text-[11px] font-bold text-light-primary dark:text-dark-primary">AUD</span>
+              <span class="block text-[9px] text-light-muted dark:text-dark-muted">Dollar</span>
+            </div>
+            <div onclick="setCurrency('JPY')" class="p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-base font-bold text-light-accent dark:text-dark-accent">¥</span>
+              <span class="block font-mono text-[11px] font-bold text-light-primary dark:text-dark-primary">JPY</span>
+              <span class="block text-[9px] text-light-muted dark:text-dark-muted">Yen</span>
+            </div>
+            <div onclick="setCurrency('SGD')" class="p-2.5 rounded-xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary cursor-pointer hover:border-light-accent dark:hover:border-dark-accent transition-colors">
+              <span class="block text-base font-bold text-light-accent dark:text-dark-accent">S$</span>
+              <span class="block font-mono text-[11px] font-bold text-light-primary dark:text-dark-primary">SGD</span>
+              <span class="block text-[9px] text-light-muted dark:text-dark-muted">Dollar</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: FLUTTER HANDOFF & SQLITE ARCHITECTURE-->
+    <!-- ========================================== -->
+    <section id="tab-content-flutter" class="hidden flex-1 flex flex-col gap-6">
+      
+      <div class="border-b border-light-border dark:border-dark-border pb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="font-display font-bold text-2xl text-light-primary dark:text-dark-primary">Flutter Developer Handoff & SQLite Schema</h2>
+          <p class="text-sm text-light-muted dark:text-dark-muted mt-1">
+            Complete production specification ready for implementation using Flutter, Material 3, and Drift / sqflite.
+          </p>
+        </div>
+        <a href="FLUTTER_HANDOFF.md" download class="flex items-center gap-2 px-4 py-2 rounded-xl bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg text-xs font-semibold hover:opacity-90 transition-opacity">
+          <span class="material-symbols-outlined text-[18px]">file_download</span>
+          <span>Download FLUTTER_HANDOFF.md</span>
+        </a>
+      </div>
+
+      <!-- Code Snippet Previews -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Flutter Theme Spec -->
+        <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-2xl p-4 shadow-soft flex flex-col">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono font-semibold text-light-accent dark:text-dark-accent">lib/theme/homely_theme.dart</span>
+            <span class="text-[10px] font-mono bg-light-secondary dark:bg-dark-secondary px-2 py-0.5 rounded text-light-muted">Material 3</span>
+          </div>
+          <pre class="bg-light-secondary dark:bg-[#101210] p-3 rounded-xl text-[11px] font-mono overflow-x-auto text-light-primary dark:text-dark-primary flex-1"><code>class HomelyColors {
+  // LIGHT MODE (Warm Oatmeal Plaster)
+  static const Color lightBg = Color(0xFFF7F7F2);
+  static const Color lightSecondaryBg = Color(0xFFEFEFE8);
+  static const Color lightCard = Color(0xFFFFFFFF);
+  static const Color lightBorder = Color(0xFFE7E8E1);
+  static const Color lightTextPrimary = Color(0xFF20231F);
+  static const Color lightTextSecondary = Color(0xFF777B73);
+  static const Color lightAccent = Color(0xFF8BAF91);
+
+  // DARK MODE (Deep Obsidian Slate)
+  static const Color darkBg = Color(0xFF151714);
+  static const Color darkSecondaryBg = Color(0xFF1D211D);
+  static const Color darkCard = Color(0xFF222720);
+  static const Color darkBorder = Color(0xFF343A33);
+  static const Color darkTextPrimary = Color(0xFFF2F3ED);
+  static const Color darkTextSecondary = Color(0xFFA1A79E);
+  static const Color darkAccent = Color(0xFF9BBDA0);
+}
+
+ThemeData get homelyLightTheme => ThemeData(
+  useMaterial3: true,
+  scaffoldBackgroundColor: HomelyColors.lightBg,
+  cardTheme: CardTheme(
+    color: HomelyColors.lightCard,
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+      side: const BorderSide(color: HomelyColors.lightBorder),
+    ),
+  ),
+);</code></pre>
+        </div>
+
+        <!-- SQLite Tables -->
+        <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-2xl p-4 shadow-soft flex flex-col">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">database/schema.sql</span>
+            <span class="text-[10px] font-mono bg-light-secondary dark:bg-dark-secondary px-2 py-0.5 rounded text-light-muted">SQLite / Drift</span>
+          </div>
+          <pre class="bg-light-secondary dark:bg-[#101210] p-3 rounded-xl text-[11px] font-mono overflow-x-auto text-light-primary dark:text-dark-primary flex-1"><code>-- 100% Offline-First Data Architecture
+CREATE TABLE inventory_items (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    quantity REAL NOT NULL DEFAULT 1.0,
+    unit TEXT NOT NULL DEFAULT 'pcs',
+    expiry_date INTEGER,
+    min_stock_level REAL NOT NULL DEFAULT 1.0,
+    price REAL,
+    created_at INTEGER NOT NULL
+);
+
+CREATE TABLE bills (
+    id TEXT PRIMARY KEY,
+    bill_name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    amount REAL NOT NULL,
+    due_date INTEGER NOT NULL,
+    frequency TEXT NOT NULL,
+    status TEXT CHECK(status IN ('upcoming','paid','overdue'))
+);
+
+CREATE TABLE assets (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    brand TEXT,
+    model TEXT,
+    warranty_expiry INTEGER NOT NULL,
+    next_service_date INTEGER
+);</code></pre>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- MODAL / INTERACTION STATE OVERLAYS                       -->
+  <!-- ======================================================== -->
+
+  <!-- Modal Backdrop -->
+  <div id="modal-backdrop" onclick="closeModal()" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden transition-opacity opacity-0"></div>
+
+  <!-- 1. Quick-Add Bottom Sheet Modal -->
+  <div id="modal-quick-add" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-light-card dark:bg-dark-card border-t border-x border-light-border dark:border-dark-border rounded-t-[32px] p-6 z-50 hidden transition-transform translate-y-full shadow-2xl">
+    <div class="w-12 h-1 bg-light-muted/30 dark:bg-dark-muted/30 rounded-full mx-auto mb-4"></div>
+    
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="font-display font-bold text-lg text-light-primary dark:text-dark-primary">Quick Add</h3>
+        <p class="text-xs text-light-muted dark:text-dark-muted">Record a new entry to your household store</p>
+      </div>
+      <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-light-secondary dark:bg-dark-secondary flex items-center justify-center text-light-muted hover:text-light-primary">
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2.5 mb-6">
+      <button onclick="selectScreen('screen_03_add_inventory'); closeModal();" class="p-3 rounded-2xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary hover:border-light-accent dark:hover:border-dark-accent text-left transition-colors flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-light-accent/15 dark:bg-dark-accent/20 flex items-center justify-center text-light-accent dark:text-dark-accent">
+          <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+        </div>
+        <div>
+          <span class="block text-xs font-semibold text-light-primary dark:text-dark-primary">Add Grocery</span>
+          <span class="text-[10px] text-light-muted dark:text-dark-muted">Kitchen stock item</span>
+        </div>
+      </button>
+
+      <button onclick="selectScreen('screen_05_bills'); closeModal();" class="p-3 rounded-2xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary hover:border-light-accent dark:hover:border-dark-accent text-left transition-colors flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/15 flex items-center justify-center text-amber-600 dark:text-amber-400">
+          <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+        </div>
+        <div>
+          <span class="block text-xs font-semibold text-light-primary dark:text-dark-primary">Add Bill</span>
+          <span class="text-[10px] text-light-muted dark:text-dark-muted">Utility or subscription</span>
+        </div>
+      </button>
+
+      <button onclick="selectScreen('screen_04_wishlist'); closeModal();" class="p-3 rounded-2xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary hover:border-light-accent dark:hover:border-dark-accent text-left transition-colors flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-600 dark:text-blue-400">
+          <span class="material-symbols-outlined text-[20px]">favorite</span>
+        </div>
+        <div>
+          <span class="block text-xs font-semibold text-light-primary dark:text-dark-primary">Add Wishlist</span>
+          <span class="text-[10px] text-light-muted dark:text-dark-muted">Scheduled purchase</span>
+        </div>
+      </button>
+
+      <button onclick="selectScreen('screen_07_assets'); closeModal();" class="p-3 rounded-2xl border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-secondary hover:border-light-accent dark:hover:border-dark-accent text-left transition-colors flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-purple-500/15 flex items-center justify-center text-purple-600 dark:text-purple-400">
+          <span class="material-symbols-outlined text-[20px]">kitchen</span>
+        </div>
+        <div>
+          <span class="block text-xs font-semibold text-light-primary dark:text-dark-primary">Add Asset</span>
+          <span class="text-[10px] text-light-muted dark:text-dark-muted">Appliance / warranty</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. Mark as Paid Modal -->
+  <div id="modal-mark-paid" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-[28px] p-6 z-50 hidden shadow-2xl">
+    <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mx-auto mb-3">
+      <span class="material-symbols-outlined text-[28px]">check_circle</span>
+    </div>
+    <h3 class="font-display font-bold text-center text-base text-light-primary dark:text-dark-primary">Confirm Bill Payment</h3>
+    <p class="text-xs text-center text-light-muted dark:text-dark-muted mt-1 mb-4">Record offline payment of ₹1,699 for ACT Fibernet</p>
+    
+    <div class="space-y-2 mb-5 text-xs">
+      <div class="flex justify-between py-1.5 border-b border-light-border dark:border-dark-border">
+        <span class="text-light-muted dark:text-dark-muted">Amount</span>
+        <span class="font-bold text-light-primary dark:text-dark-primary">₹1,699.00</span>
+      </div>
+      <div class="flex justify-between py-1.5 border-b border-light-border dark:border-dark-border">
+        <span class="text-light-muted dark:text-dark-muted">Date Paid</span>
+        <span class="font-medium text-light-primary dark:text-dark-primary">21 Nov 2026 (Today)</span>
+      </div>
+      <div class="flex justify-between py-1.5">
+        <span class="text-light-muted dark:text-dark-muted">Receipt</span>
+        <span class="text-light-accent dark:text-dark-accent font-medium">Attach from camera</span>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-light-border dark:border-dark-border text-xs font-semibold text-light-muted hover:text-light-primary">Cancel</button>
+      <button onclick="closeModal(); triggerToast('Bill marked as paid! Payment logged in local SQLite.');" class="flex-1 py-2.5 rounded-xl bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg text-xs font-semibold shadow-sm">Mark Paid</button>
+    </div>
+  </div>
+
+  <!-- 3. Delete Confirmation Dialog -->
+  <div id="modal-delete-confirm" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-[28px] p-6 z-50 hidden shadow-2xl">
+    <div class="w-12 h-12 rounded-2xl bg-rose-500/15 flex items-center justify-center text-rose-600 dark:text-rose-400 mx-auto mb-3">
+      <span class="material-symbols-outlined text-[28px]">delete_forever</span>
+    </div>
+    <h3 class="font-display font-bold text-center text-base text-light-primary dark:text-dark-primary">Delete Item?</h3>
+    <p class="text-xs text-center text-light-muted dark:text-dark-muted mt-1 mb-5">Are you sure you want to delete this record? This action removes local data permanently.</p>
+    
+    <div class="flex gap-2">
+      <button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-light-border dark:border-dark-border text-xs font-semibold text-light-muted hover:text-light-primary">Keep</button>
+      <button onclick="closeModal(); triggerToast('Item removed from local database.');" class="flex-1 py-2.5 rounded-xl bg-light-danger dark:bg-dark-danger text-white text-xs font-semibold">Delete</button>
+    </div>
+  </div>
+
+  <!-- 4. Currency Selector Modal -->
+  <div id="modal-currency" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-[28px] p-6 z-50 hidden shadow-2xl flex flex-col max-h-[85vh]">
+    <div class="flex items-center justify-between pb-3 border-b border-light-border dark:border-dark-border mb-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-light-accentSoft dark:bg-dark-accentSoft flex items-center justify-center text-light-accent dark:text-dark-accent font-bold text-base">
+          <span class="material-symbols-outlined text-[20px]">payments</span>
+        </div>
+        <div>
+          <h3 class="font-display font-bold text-base text-light-primary dark:text-dark-primary">Select Currency</h3>
+          <p class="text-[11px] text-light-muted dark:text-dark-muted">Dynamic formatting across simulator</p>
+        </div>
+      </div>
+      <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-light-secondary dark:bg-dark-secondary flex items-center justify-center text-light-muted hover:text-light-primary">
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+    </div>
+    <div class="space-y-1.5 overflow-y-auto pr-1 flex-1 py-1" id="modal-currency-options">
+      <!-- Options rendered dynamically -->
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 max-w-sm bg-[#20231F] dark:bg-[#F2F3ED] text-[#F2F3ED] dark:text-[#20231F] px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 transition-all transform translate-y-16 opacity-0 pointer-events-none">
+    <span class="material-symbols-outlined text-[18px] text-light-accent">info</span>
+    <span id="toast-message" class="text-xs font-medium">Notification message</span>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT APP LOGIC                                     -->
+  <!-- ======================================================== -->
+  <script>
+    // Screen Catalog Definition (All 15 Screens)
+    const screens = [
+      {
+        id: 'screen_01_home',
+        file: 'screen_01_home.html',
+        image: 'assets/screen_01_home.png',
+        number: '01',
+        title: 'Home Dashboard',
+        category: 'Overview',
+        description: 'Monthly expenditure, today\'s priority bills, low-stock warnings, 7-day household calendar agenda, and quick actions.'
+      },
+      {
+        id: 'screen_02_inventory',
+        file: 'screen_02_inventory.html',
+        image: 'assets/screen_02_inventory.png',
+        number: '02',
+        title: 'Household Inventory',
+        category: 'Groceries & Stock',
+        description: 'Searchable pantry and stock tracker with 9 category filters, stock level meters, expiry countdown badges, and low-stock indicators.'
+      },
+      {
+        id: 'screen_03_add_inventory',
+        file: 'screen_03_add_inventory.html',
+        image: 'assets/screen_03_add_inventory.png',
+        number: '03',
+        title: 'Add Inventory Item',
+        category: 'Modal Form',
+        description: 'Refined input form with product image upload, category selector, unit chips (kg, ltr, pcs), expiry date picker, and storage location.'
+      },
+      {
+        id: 'screen_04_wishlist',
+        file: 'screen_04_wishlist.html',
+        image: 'assets/screen_04_wishlist.png',
+        number: '04',
+        title: 'Shopping Wishlist',
+        category: 'Purchases',
+        description: 'Intent-to-buy planner organized into Today, Upcoming, Later, and Completed buckets with price estimates and priority badges.'
+      },
+      {
+        id: 'screen_05_bills',
+        file: 'screen_05_bills.html',
+        image: 'assets/screen_05_bills.png',
+        number: '05',
+        title: 'Bills & Subscriptions',
+        category: 'Finance',
+        description: 'Electricity, Wi-Fi, Water, LPG, and OTT tracker with INR ₹ formatting, upcoming/paid/overdue status, and frequency chips.'
+      },
+      {
+        id: 'screen_06_bill_details',
+        file: 'screen_06_bill_details.html',
+        image: 'assets/screen_06_bill_details.png',
+        number: '06',
+        title: 'Bill Details',
+        category: 'Finance Detail',
+        description: 'Provider breakdown, due date reminders, receipt attachment viewer, historical payment logs, and prominent "Mark as Paid" action.'
+      },
+      {
+        id: 'screen_07_assets',
+        file: 'screen_07_assets.html',
+        image: 'assets/screen_07_assets.png',
+        number: '07',
+        title: 'Assets & Appliances',
+        category: 'Maintenance',
+        description: 'Electronics, refrigerator, AC, washing machine catalog with warranty countdown indicators, serial numbers, and service schedules.'
+      },
+      {
+        id: 'screen_08_asset_details',
+        file: 'screen_08_asset_details.html',
+        image: 'assets/screen_08_asset_details.png',
+        number: '08',
+        title: 'Asset Details',
+        category: 'Maintenance Detail',
+        description: 'Detailed warranty card, remaining duration meter, vertical maintenance and repair timeline, invoice receipts, and technician logs.'
+      },
+      {
+        id: 'screen_09_vehicles',
+        file: 'screen_09_vehicles.html',
+        image: 'assets/screen_09_vehicles.png',
+        number: '09',
+        title: 'Vehicles & Garage',
+        category: 'Vehicles',
+        description: 'Multi-vehicle garage (cars, motorcycles, scooters) showing odometer readings, insurance renewal countdowns, and PUC expiry dates.'
+      },
+      {
+        id: 'screen_10_vehicle_details',
+        file: 'screen_10_vehicle_details.html',
+        image: 'assets/screen_10_vehicle_details.png',
+        number: '10',
+        title: 'Vehicle Details',
+        category: 'Vehicle Detail',
+        description: 'Fuel economy trends, odometer update logs, periodic service history, insurance policy attachments, and maintenance alert settings.'
+      },
+      {
+        id: 'screen_11_calendar',
+        file: 'screen_11_calendar.html',
+        image: 'assets/screen_11_calendar.png',
+        number: '11',
+        title: 'Unified Calendar',
+        category: 'Schedule',
+        description: 'Comprehensive monthly calendar and timeline agenda harmonizing bill due dates, scheduled shopping, service dates, and reminders.'
+      },
+      {
+        id: 'screen_12_reminders',
+        file: 'screen_12_reminders.html',
+        image: 'assets/screen_12_reminders.png',
+        number: '12',
+        title: 'Reminder Centre',
+        category: 'Reminders',
+        description: 'Focused tasks grouped by Today, Tomorrow, Upcoming, and Overdue, complete with snooze, reschedule, and dismiss micro-actions.'
+      },
+      {
+        id: 'screen_13_expenses',
+        file: 'screen_13_expenses.html',
+        image: 'assets/screen_13_expenses.png',
+        number: '13',
+        title: 'Expense Analytics',
+        category: 'Analytics',
+        description: 'Restrained, elegant financial charts displaying monthly spending, category distribution (Groceries, Utilities, Assets), and annual projections.'
+      },
+      {
+        id: 'screen_14_documents',
+        file: 'screen_14_documents.html',
+        image: 'assets/screen_14_documents.png',
+        number: '14',
+        title: 'Document Vault',
+        category: 'Documents',
+        description: 'Encrypted local document safe storing purchase invoices, warranty certificates, vehicle RC/PUC, insurance policies, and receipts.'
+      },
+      {
+        id: 'screen_15_settings',
+        file: 'screen_15_settings.html',
+        image: 'assets/screen_15_settings.png',
+        number: '15',
+        title: 'Settings & Privacy',
+        category: 'Settings',
+        description: 'Theme switching (Light/Dark/System), currency preferences, local SQLite backup & export, storage audit, and zero-cloud privacy guarantee.'
+      }
+    ];
+
+    let currentScreenId = 'screen_01_home';
+
+    // Currency Architecture
+    const CURRENCIES = [
+      { code: 'INR', symbol: '₹', name: 'Indian Rupee', flag: '🇮🇳', unit: 'Paise' },
+      { code: 'USD', symbol: '$', name: 'US Dollar', flag: '🇺🇸', unit: 'Cents' },
+      { code: 'EUR', symbol: '€', name: 'Euro', flag: '🇪🇺', unit: 'Cents' },
+      { code: 'GBP', symbol: '£', name: 'British Pound', flag: '🇬🇧', unit: 'Pence' },
+      { code: 'AED', symbol: 'د.إ', name: 'UAE Dirham', flag: '🇦🇪', unit: 'Fils' },
+      { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar', flag: '🇨🇦', unit: 'Cents' },
+      { code: 'AUD', symbol: 'A$', name: 'Australian Dollar', flag: '🇦🇺', unit: 'Cents' },
+      { code: 'JPY', symbol: '¥', name: 'Japanese Yen', flag: '🇯🇵', unit: 'Yen' },
+      { code: 'SGD', symbol: 'S$', name: 'Singapore Dollar', flag: '🇸🇬', unit: 'Cents' },
+    ];
+
+    let currentCurrencyCode = localStorage.getItem('homely_currency') || 'INR';
+
+    function initCurrency() {
+      renderCurrencyOptions();
+      setCurrency(currentCurrencyCode, false);
+    }
+
+    function toggleCurrencyMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('currency-dropdown');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    function renderCurrencyOptions() {
+      const headerList = document.getElementById('currency-options-list');
+      const modalList = document.getElementById('modal-currency-options');
+
+      const itemsHtml = CURRENCIES.map(curr => {
+        const isSelected = curr.code === currentCurrencyCode;
+        return `
+          <button onclick="setCurrency('${curr.code}')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-colors ${isSelected ? 'bg-light-accentSoft dark:bg-dark-accentSoft text-light-accent dark:text-dark-accent font-bold' : 'hover:bg-light-secondary dark:hover:bg-dark-secondary text-light-primary dark:text-dark-primary font-medium'}">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg ${isSelected ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg' : 'bg-light-secondary dark:bg-dark-secondary text-light-primary dark:text-dark-primary'} flex items-center justify-center font-bold text-xs">${curr.symbol}</span>
+              <div class="truncate">
+                <span class="block text-xs leading-none">${curr.name}</span>
+                <span class="text-[10px] text-light-muted dark:text-dark-muted font-normal">${curr.flag} ${curr.code} • ${curr.unit}</span>
+              </div>
+            </div>
+            ${isSelected ? '<span class="material-symbols-outlined text-[16px] text-light-accent dark:text-dark-accent">check</span>' : ''}
+          </button>
+        `;
+      }).join('');
+
+      if (headerList) headerList.innerHTML = itemsHtml;
+      if (modalList) modalList.innerHTML = itemsHtml;
+    }
+
+    function setCurrency(code, showToast = true) {
+      const curr = CURRENCIES.find(c => c.code === code) || CURRENCIES[0];
+      currentCurrencyCode = curr.code;
+      localStorage.setItem('homely_currency', curr.code);
+
+      // Update Header Display
+      const symEl = document.getElementById('current-currency-symbol');
+      const codeEl = document.getElementById('current-currency-code');
+      if (symEl) symEl.textContent = curr.symbol;
+      if (codeEl) codeEl.textContent = curr.code;
+
+      // Re-render checkmarks in menus
+      renderCurrencyOptions();
+
+      // Close dropdown if open
+      const menu = document.getElementById('currency-dropdown');
+      if (menu) menu.classList.add('hidden');
+
+      // Close modal if open
+      closeModal();
+
+      // Apply dynamically to active iframe
+      applyCurrencyToIframe();
+
+      // Notify with toast
+      if (showToast) {
+        triggerToast(`Currency updated to ${curr.name} (${curr.symbol} ${curr.code})`);
+      }
+    }
+
+    function applyCurrencyToIframe() {
+      try {
+        const iframe = document.getElementById('screen-iframe');
+        if (!iframe || !iframe.contentDocument) return;
+        const doc = iframe.contentDocument;
+        const curr = CURRENCIES.find(c => c.code === currentCurrencyCode) || CURRENCIES[0];
+
+        // 1. Sanitize any residual mojibake (e.g. bullets, dashes) in DOM text nodes
+        const walkerClean = doc.createTreeWalker(doc.body || doc.documentElement, NodeFilter.SHOW_TEXT, null, false);
+        let n;
+        while (n = walkerClean.nextNode()) {
+          if (n.nodeValue && /â[€₹$]¢|â€¢|â₹¢|â\$¢|â‚¹|â€“/.test(n.nodeValue)) {
+            n.nodeValue = n.nodeValue
+              .replace(/â[€₹$]¢|â€¢|â₹¢|â\$¢/g, '•')
+              .replace(/â‚¹/g, '₹')
+              .replace(/â€“/g, '–');
+          }
+        }
+
+        // 2. Replace currency symbols strictly when adjacent to price digits e.g. ₹1,450 or $42.50
+        const priceRegex = /(?:₹|\$|€|£|د\.إ|C\$|A\$|¥|S\$)(?=\s*[\d,]+)/g;
+        const walkerPrice = doc.createTreeWalker(doc.body || doc.documentElement, NodeFilter.SHOW_TEXT, null, false);
+        let pNode;
+        while (pNode = walkerPrice.nextNode()) {
+          if (pNode.nodeValue && priceRegex.test(pNode.nodeValue)) {
+            pNode.nodeValue = pNode.nodeValue.replace(priceRegex, curr.symbol);
+          }
+        }
+
+        // 3. Notify iframe window if it has dedicated listeners
+        if (iframe.contentWindow) {
+          iframe.contentWindow.postMessage({ type: 'SET_CURRENCY', code: curr.code }, '*');
+        }
+      } catch (e) {
+        console.warn('Iframe currency update note:', e);
+      }
+    }
+
+    // Populate Sidebar and Gallery Grid on page load
+    function init() {
+      initCurrency();
+      renderSidebar();
+      renderGallery();
+      selectScreen('screen_01_home');
+    }
+
+    // Render Left Sidebar Screen List
+    function renderSidebar() {
+      const listContainer = document.getElementById('screen-selector-list');
+      listContainer.innerHTML = screens.map(s => `
+        <button onclick="selectScreen('${s.id}')" id="btn-screen-${s.id}" class="w-full text-left px-3 py-2.5 rounded-xl border border-transparent hover:border-light-border dark:hover:border-dark-border transition-all flex items-center justify-between group">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-6 h-6 rounded-lg bg-light-secondary dark:bg-dark-secondary text-[11px] font-mono font-semibold flex items-center justify-center text-light-muted dark:text-dark-muted group-hover:text-light-primary dark:group-hover:text-dark-primary transition-colors flex-shrink-0">${s.number}</span>
+            <div class="truncate">
+              <span class="block text-xs font-medium text-light-primary dark:text-dark-primary truncate">${s.title}</span>
+              <span class="block text-[10px] text-light-muted dark:text-dark-muted truncate">${s.category}</span>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-[16px] text-light-muted dark:text-dark-muted opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+        </button>
+      `).join('');
+    }
+
+    // Render Tab 2: Gallery Grid
+    function renderGallery() {
+      const grid = document.getElementById('gallery-grid');
+      grid.innerHTML = screens.map(s => `
+        <div class="bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-3xl overflow-hidden shadow-soft hover:shadow-card-hover transition-all flex flex-col group">
+          <div class="relative bg-light-secondary dark:bg-dark-secondary p-4 flex items-center justify-center overflow-hidden border-b border-light-border dark:border-dark-border">
+            <img src="${s.image}" alt="${s.title}" class="h-64 object-contain rounded-xl shadow-md group-hover:scale-[1.02] transition-transform duration-300">
+            <span class="absolute top-3 left-3 bg-light-card/90 dark:bg-dark-card/90 backdrop-blur text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border border-light-border dark:border-dark-border text-light-primary dark:text-dark-primary">
+              Screen ${s.number}
+            </span>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-wider text-light-accent dark:text-dark-accent font-semibold">${s.category}</span>
+              <h3 class="font-display font-bold text-base text-light-primary dark:text-dark-primary mt-0.5">${s.title}</h3>
+              <p class="text-xs text-light-muted dark:text-dark-muted mt-2 leading-relaxed">${s.description}</p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-light-border dark:border-dark-border flex items-center justify-between">
+              <button onclick="selectScreen('${s.id}'); switchTab('simulator');" class="text-xs font-semibold text-light-accent dark:text-dark-accent hover:underline flex items-center gap-1">
+                <span>View in Simulator</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </button>
+              <a href="${s.file}" target="_blank" class="text-light-muted dark:text-dark-muted hover:text-light-primary dark:hover:text-dark-primary p-1 rounded-lg">
+                <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Select Active Screen in Simulator
+    function selectScreen(screenId) {
+      currentScreenId = screenId;
+      const s = screens.find(item => item.id === screenId);
+      if (!s) return;
+
+      // Update sidebar styles
+      screens.forEach(item => {
+        const btn = document.getElementById(`btn-screen-${item.id}`);
+        if (btn) {
+          if (item.id === screenId) {
+            btn.classList.add('bg-light-secondary', 'dark:bg-dark-secondary', 'border-light-border', 'dark:border-dark-border', 'font-semibold');
+          } else {
+            btn.classList.remove('bg-light-secondary', 'dark:bg-dark-secondary', 'border-light-border', 'dark:border-dark-border', 'font-semibold');
+          }
+        }
+      });
+
+      // Update Header info
+      document.getElementById('active-screen-category').textContent = `Screen ${s.number} • ${s.category}`;
+      document.getElementById('active-screen-title').textContent = s.title;
+      document.getElementById('open-standalone-btn').href = s.file;
+
+      // Update iframe source
+      const iframe = document.getElementById('screen-iframe');
+      iframe.src = s.file;
+      iframe.onload = () => {
+        applyThemeToIframe();
+        applyCurrencyToIframe();
+      };
+    }
+
+    // Reload active iframe
+    function reloadFrame() {
+      const iframe = document.getElementById('screen-iframe');
+      iframe.src = iframe.src;
+    }
+
+    // Switch Top Tabs
+    function switchTab(tabId) {
+      const tabs = ['simulator', 'gallery', 'system', 'flutter'];
+      tabs.forEach(t => {
+        const content = document.getElementById(`tab-content-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tabId) {
+          content.classList.remove('hidden');
+          btn.classList.add('bg-light-card', 'dark:bg-dark-card', 'text-light-primary', 'dark:text-dark-primary', 'shadow-sm');
+          btn.classList.remove('text-light-muted', 'dark:text-dark-muted');
+        } else {
+          content.classList.add('hidden');
+          btn.classList.remove('bg-light-card', 'dark:bg-dark-card', 'text-light-primary', 'dark:text-dark-primary', 'shadow-sm');
+          btn.classList.add('text-light-muted', 'dark:text-dark-muted');
+        }
+      });
+    }
+
+    // Theme Switcher (Light vs Dark)
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.classList.contains('dark');
+      const themeText = document.getElementById('theme-text');
+
+      if (isDark) {
+        html.classList.remove('dark');
+        themeText.textContent = 'Light Mode';
+      } else {
+        html.classList.add('dark');
+        themeText.textContent = 'Dark Mode';
+      }
+      applyThemeToIframe();
+    }
+
+    // Apply Dark/Light mode class directly into the embedded screen iframe
+    function applyThemeToIframe() {
+      try {
+        const iframe = document.getElementById('screen-iframe');
+        if (!iframe || !iframe.contentDocument) return;
+        const iframeDoc = iframe.contentDocument;
+        const isDark = document.documentElement.classList.contains('dark');
+
+        if (isDark) {
+          iframeDoc.documentElement.classList.add('dark');
+          iframeDoc.body.classList.add('dark');
+        } else {
+          iframeDoc.documentElement.classList.remove('dark');
+          iframeDoc.body.classList.remove('dark');
+        }
+      } catch (e) {
+        console.warn('Iframe cross-origin or access note:', e);
+      }
+    }
+
+    // Modals
+    function openModal(modalId) {
+      document.getElementById('modal-backdrop').classList.remove('hidden');
+      setTimeout(() => document.getElementById('modal-backdrop').classList.remove('opacity-0'), 10);
+
+      const targetModal = document.getElementById(`modal-${modalId}`);
+      if (targetModal) {
+        targetModal.classList.remove('hidden');
+        if (modalId === 'quick-add') {
+          setTimeout(() => targetModal.classList.remove('translate-y-full'), 10);
+        }
+      }
+    }
+
+    function closeModal() {
+      const backdrop = document.getElementById('modal-backdrop');
+      backdrop.classList.add('opacity-0');
+
+      const quickAdd = document.getElementById('modal-quick-add');
+      quickAdd.classList.add('translate-y-full');
+
+      setTimeout(() => {
+        backdrop.classList.add('hidden');
+        quickAdd.classList.add('hidden');
+        document.getElementById('modal-mark-paid').classList.add('hidden');
+        document.getElementById('modal-delete-confirm').classList.add('hidden');
+        const modalCurr = document.getElementById('modal-currency');
+        if (modalCurr) modalCurr.classList.add('hidden');
+      }, 200);
+    }
+
+    // Close currency dropdown on click outside
+    document.addEventListener('click', (e) => {
+      const container = document.getElementById('currency-menu-container');
+      const menu = document.getElementById('currency-dropdown');
+      if (container && menu && !container.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    // Listen to currency changes inside embedded iframe screens
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'CURRENCY_CHANGED' && e.data.code) {
+        setCurrency(e.data.code, false);
+      }
+    });
+
+    // Toast Notification
+    let toastTimeout = null;
+    function triggerToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = msg;
+      toast.classList.remove('translate-y-16', 'opacity-0');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('translate-y-16', 'opacity-0');
+      }, 3000);
+    }
+
+    // Initialize application
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+
+</body>
+</html>

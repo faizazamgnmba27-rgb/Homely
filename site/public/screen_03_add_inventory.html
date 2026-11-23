@@ -1,0 +1,373 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen 03 – Add Inventory Item</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Manrope', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              bg: '#F7F7F2',
+              secondaryBg: '#EFEFE8',
+              card: '#FFFFFF',
+              textPrimary: '#20231F',
+              textSecondary: '#777B73',
+              accent: '#8BAF91',
+              accentDark: '#769a7c',
+              border: '#E7E8E1',
+              warning: '#D99B4B',
+              danger: '#D96B60',
+            }
+          },
+          boxShadow: {
+            soft: '0 2px 10px rgba(32, 35, 31, 0.03)',
+            elevated: '0 8px 24px rgba(32, 35, 31, 0.06)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Manrope', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-color: #F7F7F2;
+      color: #20231F;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    .tabular-num {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="bg-[#F7F7F2] text-[#20231F] min-h-screen flex justify-center selection:bg-[#8BAF91]/20">
+  <!-- Mobile Container (Android viewport) -->
+  <div class="w-full max-w-md bg-[#F7F7F2] min-h-screen flex flex-col relative pb-28 border-x border-[#E7E8E1]/60">
+    
+    <!-- Android Status Bar -->
+    <div class="pt-3 px-6 pb-2 flex justify-between items-center text-xs font-semibold text-[#20231F] tracking-tight select-none">
+      <span>9:41</span>
+      <div class="flex items-center space-x-1.5 opacity-90">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3C7.5 3 3.75 4.8 1 7.7l11 13.3 11-13.3C20.25 4.8 16.5 3 12 3z"/>
+        </svg>
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2 22h20V2L2 22z"/>
+        </svg>
+        <div class="w-5 h-2.5 border border-[#20231F] rounded-sm p-0.5 flex items-center">
+          <div class="w-3 h-1.5 bg-[#20231F] rounded-xs"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Top App Bar -->
+    <header class="sticky top-0 z-30 bg-[#F7F7F2]/95 backdrop-blur-md px-5 py-3 border-b border-[#E7E8E1] flex items-center justify-between">
+      <button type="button" class="text-sm font-medium text-[#777B73] hover:text-[#20231F] transition-colors py-1">
+        Cancel
+      </button>
+      <div class="flex flex-col items-center">
+        <span class="text-[10px] uppercase tracking-widest font-semibold text-[#777B73]">Homely • Pantry</span>
+        <h1 class="text-base font-bold text-[#20231F] leading-tight">New Item</h1>
+      </div>
+      <button type="button" class="bg-[#8BAF91] hover:bg-[#769a7c] text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-sm transition-all active:scale-95">
+        Save Item
+      </button>
+    </header>
+
+    <!-- Scrollable Form Body -->
+    <main class="flex-1 px-4 pt-4 space-y-4">
+      
+      <!-- 2. Product Image / Scan Card -->
+      <section class="bg-white rounded-[20px] p-4 border border-[#E7E8E1] shadow-soft">
+        <div class="border-2 border-dashed border-[#E7E8E1] hover:border-[#8BAF91] transition-colors rounded-2xl p-4 text-center flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#EFEFE8]/30 cursor-pointer group">
+          <div class="flex items-center gap-3.5 text-left">
+            <div class="w-12 h-12 rounded-xl bg-white border border-[#E7E8E1] flex items-center justify-center text-[#8BAF91] shadow-sm group-hover:bg-[#8BAF91] group-hover:text-white transition-all shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-[#20231F] leading-tight">Add Product Photo</p>
+              <p class="text-xs text-[#777B73] mt-0.5">Capture package or upload thumbnail</p>
+            </div>
+          </div>
+          
+          <!-- Scan Barcode Quick Action -->
+          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E7E8E1] rounded-full text-xs font-semibold text-[#20231F] shadow-sm hover:bg-[#EFEFE8] transition-colors shrink-0">
+            <svg class="w-4 h-4 text-[#8BAF91]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Scan Barcode</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 3. Card 1: Essential Details -->
+      <section class="bg-white rounded-[20px] p-5 border border-[#E7E8E1] shadow-soft space-y-4">
+        <div class="flex items-center justify-between pb-1 border-b border-[#E7E8E1]/60">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-[#777B73]">Essential Details</h2>
+          <span class="text-[11px] font-medium text-[#8BAF91] bg-[#8BAF91]/10 px-2 py-0.5 rounded-full">Required</span>
+        </div>
+
+        <!-- Product Name -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-semibold text-[#20231F]">Item Name</label>
+          <div class="relative">
+            <input 
+              type="text" 
+              value="Cold Pressed Olive Oil" 
+              placeholder="e.g. Sourdough Bread, Basmati Rice" 
+              class="w-full h-12 px-3.5 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl text-sm font-medium text-[#20231F] focus:outline-none focus:border-[#8BAF91] focus:ring-1 focus:ring-[#8BAF91] transition-all"
+            />
+          </div>
+        </div>
+
+        <!-- Brand / Maker -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-semibold text-[#20231F]">Brand or Maker <span class="text-[#777B73] font-normal">(Optional)</span></label>
+          <input 
+            type="text" 
+            value="Borges / Organic India" 
+            placeholder="e.g. Amul, Kent, Kirkland" 
+            class="w-full h-12 px-3.5 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl text-sm font-medium text-[#20231F] focus:outline-none focus:border-[#8BAF91] focus:ring-1 focus:ring-[#8BAF91] transition-all"
+          />
+        </div>
+
+        <!-- Category Dropdown Selector -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-semibold text-[#20231F]">Category</label>
+          <div class="relative">
+            <div class="w-full h-12 px-3.5 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl flex items-center justify-between cursor-pointer hover:border-[#8BAF91] transition-colors">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#8BAF91]"></span>
+                <span class="text-sm font-medium text-[#20231F]">Groceries &amp; Cooking Essentials</span>
+              </div>
+              <svg class="w-4 h-4 text-[#777B73]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Card 2: Quantity & Stock Thresholds -->
+      <section class="bg-white rounded-[20px] p-5 border border-[#E7E8E1] shadow-soft space-y-4">
+        <div class="flex items-center justify-between pb-1 border-b border-[#E7E8E1]/60">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-[#777B73]">Quantity &amp; Stock Levels</h2>
+          <span class="text-[11px] font-medium text-[#20231F]/70">Inventory metrics</span>
+        </div>
+
+        <!-- Current Quantity & Unit -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label class="block text-xs font-semibold text-[#20231F]">Current Stock</label>
+            <div class="flex items-center justify-between h-12 px-3 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl">
+              <button type="button" class="w-7 h-7 rounded-lg bg-white border border-[#E7E8E1] text-[#20231F] flex items-center justify-center font-bold hover:bg-[#EFEFE8] transition-colors shadow-2xs">
+                −
+              </button>
+              <span class="text-base font-bold tabular-num text-[#20231F]">1</span>
+              <button type="button" class="w-7 h-7 rounded-lg bg-white border border-[#E7E8E1] text-[#20231F] flex items-center justify-center font-bold hover:bg-[#EFEFE8] transition-colors shadow-2xs">
+                +
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="block text-xs font-semibold text-[#20231F]">Measurement Unit</label>
+            <div class="relative">
+              <select class="w-full h-12 px-3.5 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl text-sm font-medium text-[#20231F] appearance-none focus:outline-none focus:border-[#8BAF91] transition-all cursor-pointer">
+                <option selected>Liters (L)</option>
+                <option>Grams (g)</option>
+                <option>Kilograms (kg)</option>
+                <option>Packets</option>
+                <option>Pieces (pcs)</option>
+                <option>Boxes</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#777B73]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alert Threshold & Price -->
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <!-- Low Stock Trigger -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-semibold text-[#20231F]">Alert Level</label>
+              <span class="text-[10px] font-semibold text-[#D99B4B] bg-[#D99B4B]/10 px-1.5 py-0.5 rounded-sm">Low stock</span>
+            </div>
+            <div class="flex items-center justify-between h-12 px-3 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl">
+              <button type="button" class="w-7 h-7 rounded-lg bg-white border border-[#E7E8E1] text-[#20231F] flex items-center justify-center font-bold hover:bg-[#EFEFE8] transition-colors shadow-2xs">
+                −
+              </button>
+              <span class="text-base font-bold tabular-num text-[#20231F]">1</span>
+              <button type="button" class="w-7 h-7 rounded-lg bg-white border border-[#E7E8E1] text-[#20231F] flex items-center justify-center font-bold hover:bg-[#EFEFE8] transition-colors shadow-2xs">
+                +
+              </button>
+            </div>
+            <p class="text-[10px] text-[#777B73] leading-tight">Prompt restock at this count</p>
+          </div>
+
+          <!-- Purchase Price -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-semibold text-[#20231F]">Purchase Price</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center font-bold text-sm text-[#777B73]">₹</span>
+              <input 
+                type="text" 
+                value="850" 
+                class="w-full h-12 pl-8 pr-3 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl text-sm font-semibold tabular-num text-[#20231F] focus:outline-none focus:border-[#8BAF91] transition-all"
+              />
+            </div>
+            <p class="text-[10px] text-[#777B73] leading-tight">Tracks monthly household spend</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Card 3: Storage & Dates -->
+      <section class="bg-white rounded-[20px] p-5 border border-[#E7E8E1] shadow-soft space-y-4">
+        <div class="flex items-center justify-between pb-1 border-b border-[#E7E8E1]/60">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-[#777B73]">Storage &amp; Expiration</h2>
+          <span class="text-[11px] font-medium text-[#777B73]">Pantry health</span>
+        </div>
+
+        <!-- Storage Location Chips -->
+        <div class="space-y-2">
+          <label class="block text-xs font-semibold text-[#20231F]">Storage Location</label>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-[#8BAF91] text-white border border-[#8BAF91] shadow-2xs flex items-center gap-1.5">
+              <span>Pantry Shelf 2</span>
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </button>
+            <button type="button" class="px-3 py-1.5 rounded-full text-xs font-medium bg-[#EFEFE8]/80 text-[#20231F] border border-[#E7E8E1] hover:bg-[#EFEFE8] transition-colors">
+              Kitchen Cabinet
+            </button>
+            <button type="button" class="px-3 py-1.5 rounded-full text-xs font-medium bg-[#EFEFE8]/80 text-[#20231F] border border-[#E7E8E1] hover:bg-[#EFEFE8] transition-colors">
+              Refrigerator
+            </button>
+            <button type="button" class="px-3 py-1.5 rounded-full text-xs font-medium bg-[#EFEFE8]/80 text-[#20231F] border border-[#E7E8E1] hover:bg-[#EFEFE8] transition-colors">
+              Spice Rack
+            </button>
+            <button type="button" class="px-2.5 py-1.5 rounded-full text-xs font-semibold bg-white text-[#8BAF91] border border-dashed border-[#8BAF91] hover:bg-[#8BAF91]/5 transition-colors">
+              + Add Location
+            </button>
+          </div>
+        </div>
+
+        <!-- Dates Grid -->
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <!-- Purchase Date -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-semibold text-[#20231F]">Purchased On</label>
+            <div class="h-12 px-3 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl flex items-center justify-between text-xs font-medium text-[#20231F]">
+              <span class="tabular-num">21 Nov 2026</span>
+              <svg class="w-4 h-4 text-[#777B73]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Expiry Date -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-semibold text-[#20231F]">Expiry Date</label>
+            <div class="h-12 px-3 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl flex items-center justify-between text-xs font-medium text-[#20231F]">
+              <span class="tabular-num text-[#20231F] font-semibold">15 Jun 2027</span>
+              <svg class="w-4 h-4 text-[#777B73]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Duration Presets -->
+        <div class="pt-0.5">
+          <span class="block text-[11px] font-medium text-[#777B73] mb-2">Quick Duration From Today:</span>
+          <div class="grid grid-cols-4 gap-1.5">
+            <button type="button" class="py-1.5 rounded-lg text-xs font-medium bg-[#EFEFE8]/80 text-[#20231F] border border-[#E7E8E1] hover:bg-[#8BAF91]/15 hover:border-[#8BAF91] transition-colors">
+              1 Week
+            </button>
+            <button type="button" class="py-1.5 rounded-lg text-xs font-medium bg-[#EFEFE8]/80 text-[#20231F] border border-[#E7E8E1] hover:bg-[#8BAF91]/15 hover:border-[#8BAF91] transition-colors">
+              1 Month
+            </button>
+            <button type="button" class="py-1.5 rounded-lg text-xs font-semibold bg-[#8BAF91]/15 text-[#20231F] border border-[#8BAF91] transition-colors">
+              6 Months
+            </button>
+            <button type="button" class="py-1.5 rounded-lg text-xs font-medium bg-[#EFEFE8]/80 text-[#20231F] border border-[#E7E8E1] hover:bg-[#8BAF91]/15 hover:border-[#8BAF91] transition-colors">
+              1 Year
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Card 4: Additional Notes -->
+      <section class="bg-white rounded-[20px] p-5 border border-[#E7E8E1] shadow-soft space-y-2">
+        <div class="flex items-center justify-between pb-1">
+          <label class="text-xs font-bold uppercase tracking-wider text-[#777B73]">Additional Notes</label>
+          <span class="text-[11px] text-[#777B73]">Optional</span>
+        </div>
+        <textarea 
+          rows="3" 
+          placeholder="Special care, batch numbers, or storage recommendations..."
+          class="w-full p-3.5 bg-[#EFEFE8]/60 border border-[#E7E8E1] rounded-xl text-sm font-normal text-[#20231F] focus:outline-none focus:border-[#8BAF91] focus:ring-1 focus:ring-[#8BAF91] transition-all resize-none leading-relaxed"
+        >Cold extracted, extra virgin. Keep away from direct sunlight.</textarea>
+      </section>
+
+      <!-- 4. Quick Options & Automation -->
+      <section class="bg-white rounded-[20px] p-4 border border-[#E7E8E1] shadow-soft">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-[#8BAF91]/15 flex items-center justify-center text-[#8BAF91]">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-[#20231F]">Auto-add to Restock Wishlist</p>
+              <p class="text-[11px] text-[#777B73] mt-0.5">Queue when inventory hits alert threshold</p>
+            </div>
+          </div>
+          <!-- Tactile Active Toggle Switch -->
+          <div class="w-11 h-6 bg-[#8BAF91] rounded-full p-0.5 flex items-center justify-end cursor-pointer shadow-inner">
+            <div class="w-5 h-5 bg-white rounded-full shadow-md"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 5. Sticky Bottom Save Bar -->
+    <div class="fixed bottom-0 max-w-md w-full bg-white/95 backdrop-blur-md px-5 py-4 border-t border-[#E7E8E1] shadow-elevated z-40">
+      <button type="button" class="w-full h-[50px] bg-[#8BAF91] hover:bg-[#769a7c] active:scale-[0.99] text-white font-semibold text-sm rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+        </svg>
+        <span>Save to Household Inventory</span>
+      </button>
+      <!-- Android Gesture Pill Navigation Inset -->
+      <div class="mt-3 flex justify-center">
+        <div class="w-32 h-1 bg-[#20231F]/20 rounded-full"></div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
