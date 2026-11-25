@@ -60,6 +60,11 @@ class DashboardScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
+            icon: Icon(Icons.refresh_rounded, color: secondary, size: 22),
+            tooltip: 'Refresh alerts',
+            onPressed: () => ref.invalidate(dashboardMetricsProvider),
+          ),
+          IconButton(
             icon: Icon(Icons.tune_outlined, color: secondary, size: 22),
             onPressed: () => context.push('/settings'),
           ),
@@ -240,13 +245,19 @@ class DashboardScreen extends ConsumerWidget {
                       title: 'Shopping & Wishlist',
                       count: m.upcomingPurchasesCount,
                       actionText: 'View list',
-                      onAction: () => context.push('/shopping'),
+                      onAction: () async {
+                        await context.push('/shopping');
+                        ref.invalidate(dashboardMetricsProvider);
+                      },
                     ),
                     if (m.upcomingPurchases.isEmpty)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: HomelyCard(
-                          onTap: () => context.push('/shopping/add'),
+                          onTap: () async {
+                            await context.push('/shopping/add');
+                            ref.invalidate(dashboardMetricsProvider);
+                          },
                           child: Row(
                             children: [
                               Container(
@@ -279,7 +290,10 @@ class DashboardScreen extends ConsumerWidget {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: HomelyCard(
-                            onTap: () => context.push('/shopping'),
+                            onTap: () async {
+                              await context.push('/shopping');
+                              ref.invalidate(dashboardMetricsProvider);
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [

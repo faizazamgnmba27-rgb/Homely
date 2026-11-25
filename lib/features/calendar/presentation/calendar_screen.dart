@@ -4,9 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/theme/homely_colors.dart';
 import '../../../core/constants/spacing.dart';
+import '../../../core/database/database_provider.dart';
+import '../../../core/notifications/notification_service.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/homely_badge.dart';
 import '../../../core/widgets/homely_card.dart';
+import '../../../core/widgets/homely_confirm_dialog.dart';
 import '../../../core/widgets/homely_empty_state.dart';
 import '../data/calendar_repository.dart';
 import 'calendar_controller.dart';
@@ -191,6 +194,50 @@ class CalendarScreen extends ConsumerWidget {
                                 ? HomelyBadgeVariant.danger
                                 : HomelyBadgeVariant.neutral,
                           ),
+                          if (event.category == 'custom')
+                            PopupMenuButton<String>(
+                              icon: Icon(Icons.more_vert, size: 18, color: secondary),
+                              onSelected: (val) async {
+                                final db = ref.read(appDatabaseProvider);
+                                final reminder = await (db.select(db.reminders)
+                                      ..where((tbl) => tbl.id.equals(event.id)))
+                                    .getSingleOrNull();
+                                if (reminder == null) return;
+
+                                if (val == 'edit') {
+                                  if (context.mounted) {
+                                    await context.push('/reminders/add', extra: reminder);
+                                    ref.invalidate(unifiedCalendarEventsProvider);
+                                  }
+                                } else if (val == 'delete') {
+                                  if (context.mounted) {
+                                    final confirmed = await HomelyConfirmDialog.show(
+                                      context,
+                                      title: 'Delete Reminder',
+                                      message: 'Are you sure you want to delete "${reminder.title}"?',
+                                      isDestructive: true,
+                                    );
+                                    if (confirmed != true) return;
+                                  }
+                                  if (reminder.notificationId != null) {
+                                    await ref
+                                        .read(notificationServiceProvider)
+                                        .cancelNotification(reminder.notificationId!);
+                                  }
+                                  await (db.delete(db.reminders)
+                                        ..where((tbl) => tbl.id.equals(reminder.id)))
+                                      .go();
+                                  ref.invalidate(unifiedCalendarEventsProvider);
+                                }
+                              },
+                              itemBuilder: (ctx) => [
+                                const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                                const PopupMenuItem(
+                                  value: 'delete',
+                                  child: Text('Delete', style: TextStyle(color: HomelyColors.danger)),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
                     );
