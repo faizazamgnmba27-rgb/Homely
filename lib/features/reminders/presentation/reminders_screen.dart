@@ -7,8 +7,8 @@ import '../../../app/theme/homely_colors.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
+import '../../../core/notifications/notification_service.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/widgets/homely_badge.dart';
 import '../../../core/widgets/homely_card.dart';
 import '../../../core/widgets/homely_empty_state.dart';
 
@@ -72,21 +72,21 @@ class RemindersScreen extends ConsumerWidget {
               if (overdue.isNotEmpty) ...[
                 Text('Overdue', style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: HomelyColors.danger)),
                 const SizedBox(height: 8),
-                ...overdue.map((r) => _buildReminderTile(context, db, r, primary, secondary, isDark)),
+                ...overdue.map((r) => _buildReminderTile(context, ref, db, r, primary, secondary, isDark)),
                 const SizedBox(height: HomelySpacing.md),
               ],
 
               if (pending.isNotEmpty) ...[
                 Text('Upcoming Tasks', style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: primary)),
                 const SizedBox(height: 8),
-                ...pending.map((r) => _buildReminderTile(context, db, r, primary, secondary, isDark)),
+                ...pending.map((r) => _buildReminderTile(context, ref, db, r, primary, secondary, isDark)),
                 const SizedBox(height: HomelySpacing.md),
               ],
 
               if (completed.isNotEmpty) ...[
                 Text('Completed', style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: secondary)),
                 const SizedBox(height: 8),
-                ...completed.map((r) => _buildReminderTile(context, db, r, primary, secondary, isDark)),
+                ...completed.map((r) => _buildReminderTile(context, ref, db, r, primary, secondary, isDark)),
               ],
             ],
           );
@@ -99,6 +99,7 @@ class RemindersScreen extends ConsumerWidget {
 
   Widget _buildReminderTile(
     BuildContext context,
+    WidgetRef ref,
     AppDatabase db,
     Reminder r,
     Color primary,
@@ -115,13 +116,19 @@ class RemindersScreen extends ConsumerWidget {
               value: r.isCompleted,
               activeColor: isDark ? HomelyColors.darkAccent : HomelyColors.lightAccent,
               onChanged: (val) async {
+                final isDone = val ?? false;
                 await (db.update(db.reminders)..where((tbl) => tbl.id.equals(r.id))).write(
                   RemindersCompanion(
-                    isCompleted: drift.Value(val ?? false),
-                    completedAt: drift.Value(val == true ? DateTime.now() : null),
+                    isCompleted: drift.Value(isDone),
+                    completedAt: drift.Value(isDone ? DateTime.now() : null),
                     updatedAt: drift.Value(DateTime.now()),
                   ),
                 );
+
+                // Cancel notification when marked complete
+                if (isDone && r.notificationId != null) {
+                  await ref.read(notificationServiceProvider).cancelNotification(r.notificationId!);
+                }
               },
             ),
             const SizedBox(width: 8),
@@ -151,6 +158,9 @@ class RemindersScreen extends ConsumerWidget {
               icon: Icon(Icons.more_vert, size: 18, color: secondary),
               onSelected: (val) async {
                 if (val == 'delete') {
+                  if (r.notificationId != null) {
+                    await ref.read(notificationServiceProvider).cancelNotification(r.notificationId!);
+                  }
                   await (db.delete(db.reminders)..where((tbl) => tbl.id.equals(r.id))).go();
                 } else if (val == 'snooze') {
                   final newDue = r.dueDate.add(const Duration(days: 1));
@@ -161,6 +171,18 @@ class RemindersScreen extends ConsumerWidget {
                       updatedAt: drift.Value(DateTime.now()),
                     ),
                   );
+
+                  // Reschedule push notification for new date
+                  if (r.notificationId != null) {
+                    await ref.read(notificationServiceProvider).scheduleNotification(
+                      id: r.notificationId!,
+                      title: 'Reminder: ${r.title}',
+                      body: r.notes ?? 'Snoozed task due now',
+                      scheduledDate: newDue,
+                      channelId: NotificationService.channelIdReminders,
+                      channelName: NotificationService.channelNameReminders,
+                    );
+                  }
                 }
               },
               itemBuilder: (ctx) => [

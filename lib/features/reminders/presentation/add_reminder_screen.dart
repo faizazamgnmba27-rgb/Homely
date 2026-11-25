@@ -8,6 +8,7 @@ import '../../../app/theme/homely_colors.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
+import '../../../core/notifications/notification_service.dart';
 import '../../../core/utils/date_formatter.dart';
 
 class AddReminderScreen extends ConsumerStatefulWidget {
@@ -39,7 +40,9 @@ class _AddReminderScreenState extends ConsumerState<AddReminderScreen> {
 
     try {
       final db = ref.read(appDatabaseProvider);
+      final notificationService = ref.read(notificationServiceProvider);
       final now = DateTime.now();
+      final notificationId = now.millisecondsSinceEpoch.remainder(1000000);
 
       await db.into(db.reminders).insert(
             RemindersCompanion.insert(
@@ -48,11 +51,24 @@ class _AddReminderScreenState extends ConsumerState<AddReminderScreen> {
               eventType: const drift.Value('custom'),
               dueDate: _dueDate,
               priority: drift.Value(_priority),
+              notificationId: drift.Value(notificationId),
               notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
               createdAt: now,
               updatedAt: now,
             ),
           );
+
+      // Schedule offline push notification for this reminder
+      await notificationService.scheduleNotification(
+        id: notificationId,
+        title: 'Reminder: ${_titleController.text.trim()}',
+        body: _notesController.text.trim().isNotEmpty
+            ? _notesController.text.trim()
+            : 'Scheduled task due now',
+        scheduledDate: _dueDate,
+        channelId: NotificationService.channelIdReminders,
+        channelName: NotificationService.channelNameReminders,
+      );
 
       if (mounted) context.pop();
     } finally {

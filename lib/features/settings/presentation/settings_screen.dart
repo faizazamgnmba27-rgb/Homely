@@ -7,6 +7,7 @@ import '../../../app/theme/homely_colors.dart';
 import '../../../app/theme/homely_theme_provider.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/models/app_currency.dart';
+import '../../../core/notifications/notification_service.dart';
 import '../../../core/providers/currency_provider.dart';
 import '../../../core/storage/backup_restore_service.dart';
 import '../../../core/widgets/homely_card.dart';
@@ -22,6 +23,40 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isBackingUp = false;
   bool _isRestoring = false;
+
+  Future<void> _handleTestNotification() async {
+    final notifService = ref.read(notificationServiceProvider);
+    await notifService.requestPermissions();
+    await notifService.showImmediateNotification(
+      title: 'Homely Alert Test 🔔',
+      body: 'Notifications and alert channels are configured and working properly on your phone!',
+    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Test notification sent! Check your notification bar.'),
+          duration: Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleRequestPermissions() async {
+    final notifService = ref.read(notificationServiceProvider);
+    final granted = await notifService.requestPermissions();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(granted
+              ? 'Notification permission granted!'
+              : 'Permission requested. If not shown, please enable in Phone App Settings.'),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
 
   Future<void> _handleBackup() async {
     setState(() => _isBackingUp = true);
@@ -191,6 +226,52 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   onTap: () => _showCurrencyPicker(context, ref, selectedCurrency),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: HomelySpacing.lg),
+
+          // Notifications & Device Alerts
+          Text('Notifications & Device Alerts', style: TextStyle(fontFamily: 'Manrope', fontSize: 13, fontWeight: FontWeight.w700, color: secondary)),
+          const SizedBox(height: 8),
+          HomelyCard(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: accent.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.notifications_active_outlined, color: accent, size: 20),
+                  ),
+                  title: Text('Send Test Notification', style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: primary)),
+                  subtitle: Text('Immediately trigger a test alert on this phone', style: TextStyle(fontSize: 11, color: secondary)),
+                  trailing: Icon(Icons.send_rounded, size: 20, color: accent),
+                  onTap: _handleTestNotification,
+                ),
+                const Divider(),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: HomelyColors.catUtilities.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.security_update_good_outlined, color: HomelyColors.catUtilities, size: 20),
+                  ),
+                  title: Text('Check & Grant Permission', style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: primary)),
+                  subtitle: Text('Prompt Android notification & exact alarm access', style: TextStyle(fontSize: 11, color: secondary)),
+                  trailing: Icon(Icons.chevron_right, size: 20, color: secondary),
+                  onTap: _handleRequestPermissions,
                 ),
               ],
             ),

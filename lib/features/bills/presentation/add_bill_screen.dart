@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../../app/theme/homely_colors.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/notifications/notification_service.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../data/bills_repository.dart';
@@ -78,6 +79,24 @@ class _AddBillScreenState extends ConsumerState<AddBillScreen> {
       );
 
       await repo.insertBill(bill);
+
+      // Schedule bill due reminder notification
+      if (_reminderDays > 0) {
+        final reminderDate = _dueDate.subtract(Duration(days: _reminderDays));
+        if (reminderDate.isAfter(now)) {
+          final notifId = now.millisecondsSinceEpoch.remainder(1000000);
+          final notifService = ref.read(notificationServiceProvider);
+          await notifService.scheduleNotification(
+            id: notifId,
+            title: 'Upcoming Bill: ${_nameController.text.trim()}',
+            body: 'Due on ${DateFormatter.formatDate(_dueDate)} - Amount: ${_amountController.text.trim()}',
+            scheduledDate: reminderDate,
+            channelId: NotificationService.channelIdBills,
+            channelName: NotificationService.channelNameBills,
+          );
+        }
+      }
+
       if (mounted) context.pop();
     } finally {
       if (mounted) setState(() => _isSaving = false);
