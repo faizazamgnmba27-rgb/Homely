@@ -43,7 +43,10 @@ class CalendarScreen extends ConsumerWidget {
           IconButton(
             icon: Icon(Icons.add_circle_outline, color: accent, size: 24),
             tooltip: 'Add Reminder',
-            onPressed: () => context.push('/reminders/add'),
+            onPressed: () async {
+              await context.push('/reminders/add');
+              ref.invalidate(unifiedCalendarEventsProvider);
+            },
           ),
         ],
       ),
@@ -139,7 +142,10 @@ class CalendarScreen extends ConsumerWidget {
                     title: 'No Events for ${DateFormatter.formatDate(selectedDate)}',
                     message: 'Your schedule is clear! All upcoming bills, groceries, vehicle and appliance services will appear here.',
                     actionLabel: 'Add Reminder',
-                    onAction: () => context.push('/reminders/add'),
+                    onAction: () async {
+                      await context.push('/reminders/add');
+                      ref.invalidate(unifiedCalendarEventsProvider);
+                    },
                   );
                 }
 
@@ -199,8 +205,9 @@ class CalendarScreen extends ConsumerWidget {
                               icon: Icon(Icons.more_vert, size: 18, color: secondary),
                               onSelected: (val) async {
                                 final db = ref.read(appDatabaseProvider);
+                                final reminderId = event.relatedEntityId ?? event.id.replaceFirst('rem_', '');
                                 final reminder = await (db.select(db.reminders)
-                                      ..where((tbl) => tbl.id.equals(event.id)))
+                                      ..where((tbl) => tbl.id.equals(reminderId)))
                                     .getSingleOrNull();
                                 if (reminder == null) return;
 

@@ -3,9 +3,9 @@ import '../data/calendar_repository.dart';
 
 final selectedCalendarDateProvider = StateProvider<DateTime>((ref) => DateTime.now());
 
-final unifiedCalendarEventsProvider = FutureProvider<List<CalendarEvent>>((ref) {
+final unifiedCalendarEventsProvider = StreamProvider<List<CalendarEvent>>((ref) {
   final repo = ref.watch(calendarRepositoryProvider);
-  return repo.getUnifiedEvents();
+  return repo.watchUnifiedEvents();
 });
 
 final eventsForSelectedDateProvider = Provider<List<CalendarEvent>>((ref) {

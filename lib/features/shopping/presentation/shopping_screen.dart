@@ -168,6 +168,24 @@ class ShoppingScreen extends ConsumerWidget {
                                           constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                                           onPressed: () => _showAddItemDialog(context, ref, itemToEdit: item),
                                         ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete_outline, size: 18, color: HomelyColors.danger),
+                                          tooltip: 'Delete item',
+                                          visualDensity: VisualDensity.compact,
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                          onPressed: () async {
+                                            final confirmed = await HomelyConfirmDialog.show(
+                                              context,
+                                              title: 'Delete Item',
+                                              message: 'Remove "${item.name}" from your wishlist?',
+                                              isDestructive: true,
+                                            );
+                                            if (confirmed == true) {
+                                              await repo.deleteItem(item.id);
+                                            }
+                                          },
+                                        ),
                                       ],
                                     ),
                                     const SizedBox(height: 2),

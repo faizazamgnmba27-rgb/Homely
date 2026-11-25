@@ -173,7 +173,7 @@ class _CookieTimerScreenState extends ConsumerState<CookieTimerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Timer',
+          'Cooking Timer',
           style: TextStyle(fontFamily: 'Manrope', fontSize: 20, fontWeight: FontWeight.w700, color: primary),
         ),
         actions: [

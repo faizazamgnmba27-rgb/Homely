@@ -156,6 +156,32 @@ class _AddReminderScreenState extends ConsumerState<AddReminderScreen> {
                 ),
                 const SizedBox(width: HomelySpacing.sm),
                 Expanded(
+                  child: InkWell(
+                    onTap: () async {
+                      final pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(_dueDate),
+                      );
+                      if (pickedTime != null) {
+                        setState(() {
+                          _dueDate = DateTime(
+                            _dueDate.year,
+                            _dueDate.month,
+                            _dueDate.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                        });
+                      }
+                    },
+                    child: InputDecorator(
+                      decoration: const InputDecoration(labelText: 'Time'),
+                      child: Text(TimeOfDay.fromDateTime(_dueDate).format(context)),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: HomelySpacing.sm),
+                Expanded(
                   child: DropdownButtonFormField<String>(
                     value: _priority,
                     items: const [

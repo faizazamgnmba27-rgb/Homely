@@ -59,9 +59,9 @@ class MoreScreen extends StatelessWidget {
         'color': const Color(0xFF6B9E78),
       },
       {
-        'title': 'Cookie Baking Timer',
-        'subtitle': 'Kitchen & baking countdown alerts',
-        'icon': Icons.cookie_outlined,
+        'title': 'Timer',
+        'subtitle': 'Countdown timer & alerts',
+        'icon': Icons.timer_outlined,
         'route': '/timer',
         'color': const Color(0xFFD48D3B),
       },
