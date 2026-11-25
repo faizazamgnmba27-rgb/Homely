@@ -4,10 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/homely_colors.dart';
 import '../../../core/constants/spacing.dart';
+import '../../../core/providers/budget_provider.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/homely_card.dart';
-import '../../../core/widgets/homely_empty_state.dart';
+import 'add_expense_sheet.dart';
 import 'expenses_controller.dart';
 
 class ExpensesScreen extends ConsumerWidget {
@@ -25,8 +26,8 @@ class ExpensesScreen extends ConsumerWidget {
     final categoryBreakdown = ref.watch(categoryBreakdownProvider);
     final expensesAsync = ref.watch(monthlyExpensesProvider);
 
-    const int monthlyBudgetPaise = 5000000; // Default budget ₹50,000 (50,000 * 100 paise)
-    final budgetPercent = (totalPaise / monthlyBudgetPaise).clamp(0.0, 1.0);
+    final monthlyBudgetPaise = ref.watch(monthlyBudgetProvider);
+    final budgetPercent = (totalPaise / (monthlyBudgetPaise > 0 ? monthlyBudgetPaise : 1)).clamp(0.0, 1.0);
 
     return Scaffold(
       appBar: AppBar(
@@ -34,6 +35,13 @@ class ExpensesScreen extends ConsumerWidget {
           'Expense Analytics',
           style: TextStyle(fontFamily: 'Manrope', fontSize: 20, fontWeight: FontWeight.w700, color: primary),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add_circle_outline, color: accent, size: 24),
+            tooltip: 'Record Daily Expense',
+            onPressed: () => AddExpenseSheet.show(context),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(

@@ -256,6 +256,97 @@ class NotificationService {
     }
   }
 
+  /// Schedule recurring alerts for shopping wishlist every 2 hours between 9:00 AM and 9:00 PM
+  /// (9 AM, 11 AM, 1 PM, 3 PM, 5 PM, 7 PM, 9 PM)
+  Future<void> scheduleShoppingWishlistAlerts({required int pendingCount}) async {
+    // 7 notification slots across the day (9am, 11am, 1pm, 3pm, 5pm, 7pm, 9pm)
+    final hours = [9, 11, 13, 15, 17, 19, 21];
+    
+    // Base notification ID offset for wishlist alerts
+    const baseId = 700000;
+
+    if (pendingCount <= 0) {
+      for (int i = 0; i < hours.length; i++) {
+        await cancelNotification(baseId + i);
+      }
+      return;
+    }
+
+    final androidDetails = const AndroidNotificationDetails(
+      channelIdShopping,
+      channelNameShopping,
+      channelDescription: 'Shopping list and wishlist reminders',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+      showWhen: true,
+      icon: '@mipmap/ic_launcher',
+    );
+    final notificationDetails = NotificationDetails(android: androidDetails);
+
+    final now = DateTime.now();
+
+    for (int i = 0; i < hours.length; i++) {
+      final hour = hours[i];
+      DateTime target = DateTime(now.year, now.month, now.day, hour, 0);
+      if (target.isBefore(now)) {
+        target = target.add(const Duration(days: 1));
+      }
+
+      final scheduledTz = tz.TZDateTime.from(target, tz.local);
+      try {
+        await _notificationsPlugin.zonedSchedule(
+          baseId + i,
+          'Shopping Wishlist Reminder 🛍️',
+          'You have $pendingCount planned purchase${pendingCount > 1 ? 's' : ''} in your wishlist.',
+          scheduledTz,
+          notificationDetails,
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.time, // Repeats daily at this exact time
+        );
+      } catch (e) {
+        debugPrint('Error scheduling 2-hour shopping reminder ($hour:00): $e');
+      }
+    }
+  }
+
+  /// Schedule notification for food/pantry item 15 days before expiry
+  Future<void> scheduleFoodExpiryAlert({
+    required int id,
+    required String itemName,
+    required DateTime expiryDate,
+  }) async {
+    final alertDate = expiryDate.subtract(const Duration(days: 15));
+    final now = DateTime.now();
+
+    DateTime scheduledDate;
+    if (alertDate.isAfter(now)) {
+      scheduledDate = alertDate;
+    } else if (expiryDate.isAfter(now)) {
+      // If already within 15 days, alert tomorrow morning 9:00 AM or in 5 minutes
+      scheduledDate = now.add(const Duration(hours: 1));
+    } else {
+      // Already expired, do not schedule
+      return;
+    }
+
+    final diffDays = expiryDate.difference(now).inDays;
+    final bodyText = diffDays <= 15
+        ? '$itemName is expiring in $diffDays day${diffDays != 1 ? 's' : ''}! Use it soon.'
+        : '$itemName will expire in 15 days (${expiryDate.day}/${expiryDate.month}/${expiryDate.year}).';
+
+    await scheduleNotification(
+      id: id,
+      title: 'Food Expiry Warning 🍎',
+      body: bodyText,
+      scheduledDate: scheduledDate,
+      channelId: channelIdInventory,
+      channelName: channelNameInventory,
+    );
+  }
+
   /// Cancel all active scheduled notifications
   Future<void> cancelAllNotifications() async {
     try {

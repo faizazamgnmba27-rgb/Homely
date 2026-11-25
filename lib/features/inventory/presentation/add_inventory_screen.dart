@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../../app/theme/homely_colors.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/notifications/notification_service.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../data/inventory_repository.dart';
@@ -84,6 +85,16 @@ class _AddInventoryScreenState extends ConsumerState<AddInventoryScreen> {
       );
 
       await repo.insertItem(newItem);
+
+      // Schedule food expiry alert 15 days before if expiry date is set
+      if (_expiryDate != null) {
+        final notifId = now.millisecondsSinceEpoch.remainder(1000000);
+        await ref.read(notificationServiceProvider).scheduleFoodExpiryAlert(
+          id: notifId,
+          itemName: _nameController.text.trim(),
+          expiryDate: _expiryDate!,
+        );
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

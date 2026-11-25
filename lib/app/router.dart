@@ -22,6 +22,7 @@ import '../features/expenses/presentation/expenses_screen.dart';
 import '../features/documents/presentation/documents_screen.dart';
 import '../features/more/presentation/more_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
+import '../features/timer/presentation/cookie_timer_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -163,6 +164,11 @@ final homelyRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       path: '/settings',
       builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: '/timer',
+      builder: (context, state) => const CookieTimerScreen(),
     ),
   ],
 );

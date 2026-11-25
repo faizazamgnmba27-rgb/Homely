@@ -8,7 +8,9 @@ import '../../../app/theme/homely_theme_provider.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/models/app_currency.dart';
 import '../../../core/notifications/notification_service.dart';
+import '../../../core/providers/budget_provider.dart';
 import '../../../core/providers/currency_provider.dart';
+import '../../../core/utils/currency_formatter.dart';
 import '../../../core/storage/backup_restore_service.dart';
 import '../../../core/widgets/homely_card.dart';
 import '../../../core/widgets/homely_confirm_dialog.dart';
@@ -55,6 +57,63 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           behavior: SnackBarBehavior.floating,
         ),
       );
+    }
+  }
+
+  Future<void> _showBudgetDialog(BuildContext context, int currentBudgetPaise) async {
+    final controller = TextEditingController(
+      text: (currentBudgetPaise / 100).toStringAsFixed(0),
+    );
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Edit Monthly Budget', style: TextStyle(fontFamily: 'Manrope', fontWeight: FontWeight.w700)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Set your monthly spending target for analytics & indicators:'),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'Monthly Budget',
+                  prefixText: '₹ ',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Save Budget'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      final newBudget = CurrencyFormatter.parseToPaise(controller.text);
+      if (newBudget > 0) {
+        await ref.read(monthlyBudgetProvider.notifier).setBudget(newBudget);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Monthly budget updated to ${CurrencyFormatter.formatPaise(newBudget)}'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
     }
   }
 
@@ -226,6 +285,40 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ],
                   ),
                   onTap: () => _showCurrencyPicker(context, ref, selectedCurrency),
+                ),
+                const Divider(),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: HomelyColors.success.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.account_balance_wallet_outlined, color: HomelyColors.success, size: 20),
+                  ),
+                  title: Text('Monthly Budget', style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: primary)),
+                  subtitle: Text('Current target: ${CurrencyFormatter.formatPaise(ref.watch(monthlyBudgetProvider))}', style: TextStyle(fontSize: 11, color: secondary)),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: HomelyColors.success.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          CurrencyFormatter.formatPaise(ref.watch(monthlyBudgetProvider)),
+                          style: const TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w700, color: HomelyColors.success),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(Icons.edit_outlined, size: 18, color: secondary),
+                    ],
+                  ),
+                  onTap: () => _showBudgetDialog(context, ref.read(monthlyBudgetProvider)),
                 ),
               ],
             ),

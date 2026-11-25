@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/theme/homely_colors.dart';
+import '../../features/expenses/presentation/add_expense_sheet.dart';
 import '../constants/spacing.dart';
 
 class HomelyQuickAddSheet extends StatelessWidget {
@@ -130,6 +131,17 @@ class HomelyQuickAddSheet extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
                   context.push('/vehicles/add');
+                },
+              ),
+              _buildActionTile(
+                context,
+                title: 'Add Expense',
+                subtitle: 'Daily expense & mode',
+                icon: Icons.account_balance_wallet_outlined,
+                accentColor: HomelyColors.success,
+                onTap: () {
+                  Navigator.pop(context);
+                  AddExpenseSheet.show(context);
                 },
               ),
               _buildActionTile(

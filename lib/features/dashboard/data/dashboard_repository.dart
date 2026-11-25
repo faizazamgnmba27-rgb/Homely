@@ -15,8 +15,10 @@ class DashboardMetrics {
   final int lowStockCount;
   final int expiringWarrantiesCount;
   final int upcomingPurchasesCount;
+  final int expiringFoodCount;
   final List<Bill> upcomingBills;
   final List<InventoryItem> lowStockItems;
+  final List<InventoryItem> expiringFoodItems;
   final List<Asset> expiringAssets;
   final List<ShoppingItem> upcomingPurchases;
 
@@ -27,8 +29,10 @@ class DashboardMetrics {
     required this.lowStockCount,
     required this.expiringWarrantiesCount,
     required this.upcomingPurchasesCount,
+    required this.expiringFoodCount,
     required this.upcomingBills,
     required this.lowStockItems,
+    required this.expiringFoodItems,
     required this.expiringAssets,
     required this.upcomingPurchases,
   });
@@ -69,7 +73,18 @@ class DashboardRepository {
           ..where((i) => i.quantity.isSmallerOrEqual(i.minStockThreshold) & i.isConsumed.equals(false)))
         .get();
 
-    // 4. Expiring Warranties (within 45 days)
+    // 4. Near Expiry Food (within 15 days)
+    final fifteenDaysLater = now.add(const Duration(days: 15));
+    final expiringFood = await (_db.select(_db.inventoryItems)
+          ..where((i) =>
+              i.expiryDate.isNotNull() &
+              i.expiryDate.isBiggerOrEqualValue(now) &
+              i.expiryDate.isSmallerOrEqualValue(fifteenDaysLater) &
+              i.isConsumed.equals(false))
+          ..orderBy([(i) => OrderingTerm(expression: i.expiryDate)]))
+        .get();
+
+    // 5. Expiring Warranties (within 45 days)
     final warrantyThreshold = now.add(const Duration(days: 45));
     final expiringAssets = await (_db.select(_db.assets)
           ..where((a) =>
@@ -77,7 +92,7 @@ class DashboardRepository {
               a.warrantyExpiryDate.isSmallerOrEqualValue(warrantyThreshold)))
         .get();
 
-    // 5. Upcoming Shopping Wishlist items
+    // 6. Upcoming Shopping Wishlist items
     final purchases = await (_db.select(_db.shoppingItems)
           ..where((s) => s.status.equals('planned'))
           ..orderBy([(s) => OrderingTerm(expression: s.plannedPurchaseDate)]))
@@ -90,8 +105,10 @@ class DashboardRepository {
       lowStockCount: lowStock.length,
       expiringWarrantiesCount: expiringAssets.length,
       upcomingPurchasesCount: purchases.length,
+      expiringFoodCount: expiringFood.length,
       upcomingBills: bills.take(3).toList(),
       lowStockItems: lowStock.take(3).toList(),
+      expiringFoodItems: expiringFood,
       expiringAssets: expiringAssets.take(3).toList(),
       upcomingPurchases: purchases.take(3).toList(),
     );

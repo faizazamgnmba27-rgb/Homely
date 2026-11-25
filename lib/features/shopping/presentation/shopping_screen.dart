@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../../../app/theme/homely_colors.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/notifications/notification_service.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/homely_badge.dart';
@@ -361,6 +362,12 @@ class _AddShoppingItemSheetState extends ConsumerState<_AddShoppingItemSheet> {
     );
 
     await repo.insertItem(item);
+
+    // Reschedule/ensure 2-hour repeating shopping wishlist reminders (9am - 9pm)
+    final allItems = await ref.read(shoppingRepositoryProvider).watchAllItems().first;
+    final pendingCount = allItems.where((i) => i.status == 'planned').length;
+    await ref.read(notificationServiceProvider).scheduleShoppingWishlistAlerts(pendingCount: pendingCount);
+
     if (mounted) Navigator.pop(context);
   }
 

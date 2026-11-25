@@ -9,6 +9,7 @@ import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/homely_badge.dart';
 import '../../../core/widgets/homely_card.dart';
 import '../../../core/widgets/homely_section_header.dart';
+import '../../expenses/presentation/add_expense_sheet.dart';
 import 'dashboard_controller.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -161,6 +162,8 @@ class DashboardScreen extends ConsumerWidget {
                         children: [
                           _buildQuickActionChip(context, '+ Grocery', () => context.push('/inventory/add'), accent, isDark),
                           const SizedBox(width: 8),
+                          _buildQuickActionChip(context, '+ Expense', () => AddExpenseSheet.show(context), HomelyColors.success, isDark),
+                          const SizedBox(width: 8),
                           _buildQuickActionChip(context, '+ Bill', () => context.push('/bills/add'), accent, isDark),
                           const SizedBox(width: 8),
                           _buildQuickActionChip(context, '+ Wishlist', () => context.push('/shopping/add'), accent, isDark),
@@ -168,6 +171,8 @@ class DashboardScreen extends ConsumerWidget {
                           _buildQuickActionChip(context, '+ Asset', () => context.push('/assets/add'), accent, isDark),
                           const SizedBox(width: 8),
                           _buildQuickActionChip(context, '+ Reminder', () => context.push('/reminders/add'), accent, isDark),
+                          const SizedBox(width: 8),
+                          _buildQuickActionChip(context, '🍪 Timer', () => context.push('/timer'), const Color(0xFFD48D3B), isDark),
                         ],
                       ),
                     ),
@@ -345,6 +350,79 @@ class DashboardScreen extends ConsumerWidget {
                       }),
 
                     const SizedBox(height: HomelySpacing.md),
+
+                    // Section: Near Expiry Food (15 Days Alert)
+                    if (m.expiringFoodItems.isNotEmpty) ...[
+                      HomelySectionHeader(
+                        title: 'Food Expiring Soon (15 Days)',
+                        count: m.expiringFoodCount,
+                        actionText: 'View Food',
+                        onAction: () => context.go('/inventory'),
+                      ),
+                      ...m.expiringFoodItems.map((food) {
+                        final daysLeft = food.expiryDate!.difference(DateTime.now()).inDays;
+                        final isCritical = daysLeft <= 3;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: HomelyCard(
+                            onTap: () => context.go('/inventory'),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 38,
+                                      height: 38,
+                                      decoration: BoxDecoration(
+                                        color: isCritical
+                                            ? HomelyColors.danger.withOpacity(0.12)
+                                            : HomelyColors.warning.withOpacity(0.12),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Icon(
+                                        Icons.restaurant_outlined,
+                                        size: 20,
+                                        color: isCritical ? HomelyColors.danger : HomelyColors.warning,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          food.name,
+                                          style: TextStyle(
+                                            fontFamily: 'Manrope',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: primary,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Expires: ${DateFormatter.formatDate(food.expiryDate!)} • Qty: ${food.quantity} ${food.unit}',
+                                          style: TextStyle(fontSize: 11, color: secondary),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                HomelyBadge(
+                                  label: daysLeft <= 0
+                                      ? 'Expires Today'
+                                      : '$daysLeft ${daysLeft == 1 ? 'day' : 'days'} left',
+                                  variant: isCritical
+                                      ? HomelyBadgeVariant.danger
+                                      : HomelyBadgeVariant.warning,
+                                  icon: Icons.timer_outlined,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: HomelySpacing.md),
+                    ],
 
                     // Section D: Low Stock Inventory Alerts
                     if (m.lowStockItems.isNotEmpty) ...[

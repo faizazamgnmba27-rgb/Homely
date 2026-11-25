@@ -139,20 +139,20 @@ class AssetsScreen extends ConsumerWidget {
                           spacing: 6,
                           children: [
                             if (isExpired)
-                              const HomelyBadge(
-                                label: 'Warranty Expired',
+                              HomelyBadge(
+                                label: 'Warranty Expired (${DateFormatter.formatDate(a.warrantyExpiryDate)})',
                                 variant: HomelyBadgeVariant.danger,
                                 icon: Icons.warning_amber_rounded,
                               )
                             else if (isExpiringSoon)
                               HomelyBadge(
-                                label: 'Expiring: ${DateFormatter.formatRemainingWarranty(a.warrantyExpiryDate)}',
+                                label: 'Exp: ${DateFormatter.formatDate(a.warrantyExpiryDate)}',
                                 variant: HomelyBadgeVariant.warning,
                                 icon: Icons.schedule,
                               )
                             else
                               HomelyBadge(
-                                label: 'Warranty: ${DateFormatter.formatRemainingWarranty(a.warrantyExpiryDate)}',
+                                label: 'Warranty: ${DateFormatter.formatDate(a.warrantyExpiryDate)}',
                                 variant: HomelyBadgeVariant.neutral,
                               ),
                           ],

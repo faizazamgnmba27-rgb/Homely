@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 class DateFormatter {
   static final DateFormat _standardDate = DateFormat('dd MMM yyyy');
-  static final DateFormat _shortDate = DateFormat('dd MMM');
+  static final DateFormat _shortDate = DateFormat('dd MMM yyyy');
   static final DateFormat _monthYear = DateFormat('MMMM yyyy');
   static final DateFormat _timeOnly = DateFormat('hh:mm a');
 
