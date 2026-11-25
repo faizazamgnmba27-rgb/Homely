@@ -19,12 +19,12 @@ import 'shopping_controller.dart';
 class ShoppingScreen extends ConsumerWidget {
   const ShoppingScreen({Key? key}) : super(key: key);
 
-  void _showAddItemDialog(BuildContext context, WidgetRef ref) {
+  void _showAddItemDialog(BuildContext context, WidgetRef ref, {ShoppingItem? itemToEdit}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => const _AddShoppingItemSheet(),
+      builder: (ctx) => _AddShoppingItemSheet(itemToEdit: itemToEdit),
     );
   }
 
@@ -160,6 +160,14 @@ class ShoppingScreen extends ConsumerWidget {
                                               color: primary,
                                             ),
                                           ),
+                                        IconButton(
+                                          icon: Icon(Icons.edit_outlined, size: 18, color: secondary),
+                                          tooltip: 'Edit item',
+                                          visualDensity: VisualDensity.compact,
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                          onPressed: () => _showAddItemDialog(context, ref, itemToEdit: item),
+                                        ),
                                       ],
                                     ),
                                     const SizedBox(height: 2),
@@ -301,7 +309,9 @@ class ShoppingScreen extends ConsumerWidget {
 }
 
 class _AddShoppingItemSheet extends ConsumerStatefulWidget {
-  const _AddShoppingItemSheet({Key? key}) : super(key: key);
+  final ShoppingItem? itemToEdit;
+
+  const _AddShoppingItemSheet({Key? key, this.itemToEdit}) : super(key: key);
 
   @override
   ConsumerState<_AddShoppingItemSheet> createState() => _AddShoppingItemSheetState();
@@ -330,6 +340,25 @@ class _AddShoppingItemSheetState extends ConsumerState<_AddShoppingItemSheet> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    final item = widget.itemToEdit;
+    if (item != null) {
+      _nameController.text = item.name;
+      if (item.expectedPricePaise != null) {
+        _priceController.text = (item.expectedPricePaise! / 100).toStringAsFixed(2);
+      }
+      _qtyController.text = item.quantity.toString();
+      _notesController.text = item.notes ?? '';
+      if (_categories.contains(item.category)) {
+        _category = item.category;
+      }
+      _priority = item.priority;
+      _plannedDate = item.plannedPurchaseDate;
+    }
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _priceController.dispose();
@@ -347,21 +376,42 @@ class _AddShoppingItemSheetState extends ConsumerState<_AddShoppingItemSheet> {
         ? CurrencyFormatter.parseToPaise(_priceController.text)
         : null;
 
-    final item = ShoppingItemsCompanion.insert(
-      id: const Uuid().v4(),
-      name: _nameController.text.trim(),
-      category: _category,
-      quantity: drift.Value(double.tryParse(_qtyController.text) ?? 1.0),
-      expectedPricePaise: drift.Value(pricePaise),
-      priority: drift.Value(_priority),
-      plannedPurchaseDate: _plannedDate,
-      notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
-      status: const drift.Value('planned'),
-      createdAt: now,
-      updatedAt: now,
-    );
+    if (widget.itemToEdit != null) {
+      final existing = widget.itemToEdit!;
+      final updated = ShoppingItemsCompanion(
+        id: drift.Value(existing.id),
+        name: drift.Value(_nameController.text.trim()),
+        category: drift.Value(_category),
+        quantity: drift.Value(double.tryParse(_qtyController.text) ?? 1.0),
+        unit: drift.Value(existing.unit),
+        expectedPricePaise: drift.Value(pricePaise),
+        priority: drift.Value(_priority),
+        plannedPurchaseDate: drift.Value(_plannedDate),
+        notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
+        status: drift.Value(existing.status),
+        isConvertedToInventory: drift.Value(existing.isConvertedToInventory),
+        convertedInventoryItemId: drift.Value(existing.convertedInventoryItemId),
+        createdAt: drift.Value(existing.createdAt),
+        updatedAt: drift.Value(now),
+      );
+      await repo.updateItem(updated);
+    } else {
+      final item = ShoppingItemsCompanion.insert(
+        id: const Uuid().v4(),
+        name: _nameController.text.trim(),
+        category: _category,
+        quantity: drift.Value(double.tryParse(_qtyController.text) ?? 1.0),
+        expectedPricePaise: drift.Value(pricePaise),
+        priority: drift.Value(_priority),
+        plannedPurchaseDate: _plannedDate,
+        notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
+        status: const drift.Value('planned'),
+        createdAt: now,
+        updatedAt: now,
+      );
 
-    await repo.insertItem(item);
+      await repo.insertItem(item);
+    }
 
     // Reschedule/ensure 2-hour repeating shopping wishlist reminders (9am - 9pm)
     final allItems = await ref.read(shoppingRepositoryProvider).watchAllItems().first;
@@ -393,7 +443,10 @@ class _AddShoppingItemSheetState extends ConsumerState<_AddShoppingItemSheet> {
         child: ListView(
           shrinkWrap: true,
           children: [
-            Text('Add to Shopping Wishlist', style: TextStyle(fontFamily: 'Manrope', fontSize: 18, fontWeight: FontWeight.w700, color: primary)),
+            Text(
+              widget.itemToEdit != null ? 'Edit Wishlist Item' : 'Add to Shopping Wishlist',
+              style: TextStyle(fontFamily: 'Manrope', fontSize: 18, fontWeight: FontWeight.w700, color: primary),
+            ),
             const SizedBox(height: HomelySpacing.md),
             TextFormField(
               controller: _nameController,
@@ -443,7 +496,7 @@ class _AddShoppingItemSheetState extends ConsumerState<_AddShoppingItemSheet> {
                       final picked = await showDatePicker(
                         context: context,
                         initialDate: _plannedDate,
-                        firstDate: DateTime.now(),
+                        firstDate: DateTime(2020),
                         lastDate: DateTime.now().add(const Duration(days: 365)),
                       );
                       if (picked != null) setState(() => _plannedDate = picked);

@@ -12,7 +12,9 @@ import '../../../core/notifications/notification_service.dart';
 import '../../../core/utils/date_formatter.dart';
 
 class AddReminderScreen extends ConsumerStatefulWidget {
-  const AddReminderScreen({Key? key}) : super(key: key);
+  final Reminder? reminderToEdit;
+
+  const AddReminderScreen({Key? key, this.reminderToEdit}) : super(key: key);
 
   @override
   ConsumerState<AddReminderScreen> createState() => _AddReminderScreenState();
@@ -26,6 +28,18 @@ class _AddReminderScreenState extends ConsumerState<AddReminderScreen> {
   DateTime _dueDate = DateTime.now().add(const Duration(hours: 4));
   String _priority = 'medium';
   bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final r = widget.reminderToEdit;
+    if (r != null) {
+      _titleController.text = r.title;
+      _notesController.text = r.notes ?? '';
+      _dueDate = r.dueDate;
+      _priority = r.priority;
+    }
+  }
 
   @override
   void dispose() {
@@ -42,21 +56,38 @@ class _AddReminderScreenState extends ConsumerState<AddReminderScreen> {
       final db = ref.read(appDatabaseProvider);
       final notificationService = ref.read(notificationServiceProvider);
       final now = DateTime.now();
-      final notificationId = now.millisecondsSinceEpoch.remainder(1000000);
+      final existing = widget.reminderToEdit;
+      final notificationId = existing?.notificationId ?? now.millisecondsSinceEpoch.remainder(1000000);
 
-      await db.into(db.reminders).insert(
-            RemindersCompanion.insert(
-              id: const Uuid().v4(),
-              title: _titleController.text.trim(),
-              eventType: const drift.Value('custom'),
-              dueDate: _dueDate,
-              priority: drift.Value(_priority),
-              notificationId: drift.Value(notificationId),
-              notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
-              createdAt: now,
-              updatedAt: now,
-            ),
-          );
+      if (existing != null) {
+        if (existing.notificationId != null) {
+          await notificationService.cancelNotification(existing.notificationId!);
+        }
+        await (db.update(db.reminders)..where((tbl) => tbl.id.equals(existing.id))).write(
+          RemindersCompanion(
+            title: drift.Value(_titleController.text.trim()),
+            dueDate: drift.Value(_dueDate),
+            priority: drift.Value(_priority),
+            notificationId: drift.Value(notificationId),
+            notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
+            updatedAt: drift.Value(now),
+          ),
+        );
+      } else {
+        await db.into(db.reminders).insert(
+              RemindersCompanion.insert(
+                id: const Uuid().v4(),
+                title: _titleController.text.trim(),
+                eventType: const drift.Value('custom'),
+                dueDate: _dueDate,
+                priority: drift.Value(_priority),
+                notificationId: drift.Value(notificationId),
+                notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
+      }
 
       // Schedule offline push notification for this reminder
       await notificationService.scheduleNotification(
@@ -85,7 +116,7 @@ class _AddReminderScreenState extends ConsumerState<AddReminderScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Add Reminder',
+          widget.reminderToEdit != null ? 'Edit Reminder' : 'Add Reminder',
           style: TextStyle(fontFamily: 'Manrope', fontSize: 18, fontWeight: FontWeight.w700, color: primary),
         ),
       ),
@@ -108,7 +139,7 @@ class _AddReminderScreenState extends ConsumerState<AddReminderScreen> {
                       final picked = await showDatePicker(
                         context: context,
                         initialDate: _dueDate,
-                        firstDate: DateTime.now().subtract(const Duration(days: 1)),
+                        firstDate: DateTime(2020),
                         lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
                       );
                       if (picked != null) {

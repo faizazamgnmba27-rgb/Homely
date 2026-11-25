@@ -79,7 +79,10 @@ final homelyRouter = GoRouter(
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
       path: '/inventory/add',
-      builder: (context, state) => const AddInventoryScreen(),
+      builder: (context, state) {
+        final item = state.extra;
+        return AddInventoryScreen(itemToEdit: item is InventoryItem ? item : null);
+      },
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
@@ -153,7 +156,10 @@ final homelyRouter = GoRouter(
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
       path: '/reminders/add',
-      builder: (context, state) => const AddReminderScreen(),
+      builder: (context, state) {
+        final reminder = state.extra;
+        return AddReminderScreen(reminderToEdit: reminder is Reminder ? reminder : null);
+      },
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,

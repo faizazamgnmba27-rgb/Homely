@@ -14,7 +14,9 @@ import '../data/inventory_repository.dart';
 import 'inventory_controller.dart';
 
 class AddInventoryScreen extends ConsumerStatefulWidget {
-  const AddInventoryScreen({Key? key}) : super(key: key);
+  final InventoryItem? itemToEdit;
+
+  const AddInventoryScreen({Key? key, this.itemToEdit}) : super(key: key);
 
   @override
   ConsumerState<AddInventoryScreen> createState() => _AddInventoryScreenState();
@@ -39,6 +41,27 @@ class _AddInventoryScreenState extends ConsumerState<AddInventoryScreen> {
 
   final List<String> _units = ['pcs', 'kg', 'ltr', 'g', 'packets', 'bottles', 'cans'];
   final List<String> _storageLocations = ['Pantry', 'Refrigerator', 'Freezer', 'Kitchen Cabinet', 'Spice Rack', 'Bathroom'];
+
+  @override
+  void initState() {
+    super.initState();
+    final item = widget.itemToEdit;
+    if (item != null) {
+      _nameController.text = item.name;
+      _brandController.text = item.brand ?? '';
+      _qtyController.text = item.quantity.toString();
+      _minThresholdController.text = item.minStockThreshold.toString();
+      if (item.approximatePricePaise != null) {
+        _priceController.text = (item.approximatePricePaise! / 100).toStringAsFixed(2);
+      }
+      _storageLocationController.text = item.storageLocation ?? 'Pantry';
+      _notesController.text = item.notes ?? '';
+      _selectedCategory = item.categoryId;
+      _selectedUnit = item.unit;
+      _purchaseDate = item.purchaseDate;
+      _expiryDate = item.expiryDate;
+    }
+  }
 
   @override
   void dispose() {
@@ -66,25 +89,47 @@ class _AddInventoryScreenState extends ConsumerState<AddInventoryScreen> {
           : null;
 
       final now = DateTime.now();
-      final newItem = InventoryItemsCompanion.insert(
-        id: const Uuid().v4(),
-        name: _nameController.text.trim(),
-        categoryId: _selectedCategory,
-        brand: drift.Value(_brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null),
-        quantity: drift.Value(qty),
-        unit: drift.Value(_selectedUnit),
-        purchaseDate: drift.Value(_purchaseDate),
-        expiryDate: drift.Value(_expiryDate),
-        minStockThreshold: drift.Value(threshold),
-        approximatePricePaise: drift.Value(pricePaise),
-        storageLocation: drift.Value(_storageLocationController.text.trim()),
-        notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
-        isConsumed: const drift.Value(false),
-        createdAt: now,
-        updatedAt: now,
-      );
+      final isEditing = widget.itemToEdit != null;
+      if (isEditing) {
+        final updatedItem = InventoryItemsCompanion(
+          id: drift.Value(widget.itemToEdit!.id),
+          name: drift.Value(_nameController.text.trim()),
+          categoryId: drift.Value(_selectedCategory),
+          brand: drift.Value(_brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null),
+          quantity: drift.Value(qty),
+          unit: drift.Value(_selectedUnit),
+          purchaseDate: drift.Value(_purchaseDate),
+          expiryDate: drift.Value(_expiryDate),
+          minStockThreshold: drift.Value(threshold),
+          approximatePricePaise: drift.Value(pricePaise),
+          storageLocation: drift.Value(_storageLocationController.text.trim()),
+          notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
+          isConsumed: drift.Value(widget.itemToEdit!.isConsumed),
+          createdAt: drift.Value(widget.itemToEdit!.createdAt),
+          updatedAt: drift.Value(now),
+        );
+        await repo.updateItem(updatedItem);
+      } else {
+        final newItem = InventoryItemsCompanion.insert(
+          id: const Uuid().v4(),
+          name: _nameController.text.trim(),
+          categoryId: _selectedCategory,
+          brand: drift.Value(_brandController.text.trim().isNotEmpty ? _brandController.text.trim() : null),
+          quantity: drift.Value(qty),
+          unit: drift.Value(_selectedUnit),
+          purchaseDate: drift.Value(_purchaseDate),
+          expiryDate: drift.Value(_expiryDate),
+          minStockThreshold: drift.Value(threshold),
+          approximatePricePaise: drift.Value(pricePaise),
+          storageLocation: drift.Value(_storageLocationController.text.trim()),
+          notes: drift.Value(_notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null),
+          isConsumed: const drift.Value(false),
+          createdAt: now,
+          updatedAt: now,
+        );
 
-      await repo.insertItem(newItem);
+        await repo.insertItem(newItem);
+      }
 
       // Schedule food expiry alert 15 days before if expiry date is set
       if (_expiryDate != null) {
@@ -99,7 +144,7 @@ class _AddInventoryScreenState extends ConsumerState<AddInventoryScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${_nameController.text} added to inventory!'),
+            content: Text(isEditing ? '${_nameController.text} updated!' : '${_nameController.text} added to inventory!'),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -127,7 +172,7 @@ class _AddInventoryScreenState extends ConsumerState<AddInventoryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Add Inventory Item',
+          widget.itemToEdit != null ? 'Edit Inventory Item' : 'Add Inventory Item',
           style: TextStyle(
             fontFamily: 'Manrope',
             fontSize: 18,

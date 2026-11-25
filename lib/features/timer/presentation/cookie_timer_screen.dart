@@ -16,18 +16,18 @@ class CookieTimerScreen extends ConsumerStatefulWidget {
 
 class _CookieTimerScreenState extends ConsumerState<CookieTimerScreen> {
   Timer? _timer;
-  int _totalSeconds = 12 * 60; // 12 minutes default for classic cookies
-  int _remainingSeconds = 12 * 60;
+  int _totalSeconds = 5 * 60; // 5 minutes default
+  int _remainingSeconds = 5 * 60;
   bool _isRunning = false;
-  String _selectedPreset = 'Chewy Chocolate Chip (12m)';
+  String _selectedPreset = '5 Minutes';
 
   final Map<String, int> _presets = {
-    'Chewy Chocolate Chip (12m)': 12 * 60,
-    'Crispy Butter Cookies (15m)': 15 * 60,
-    'Soft Oatmeal Raisin (10m)': 10 * 60,
-    'Shortbread / Biscuits (18m)': 18 * 60,
-    'Quick Brownie Bites (8m)': 8 * 60,
-    'Quick Test (15s)': 15,
+    '1 Minute': 60,
+    '3 Minutes': 3 * 60,
+    '5 Minutes': 5 * 60,
+    '10 Minutes': 10 * 60,
+    '15 Minutes': 15 * 60,
+    '30 Minutes': 30 * 60,
   };
 
   @override
@@ -75,8 +75,8 @@ class _CookieTimerScreenState extends ConsumerState<CookieTimerScreen> {
     final notif = ref.read(notificationServiceProvider);
     await notif.showImmediateNotification(
       id: 888888,
-      title: '🍪 Cookies Are Ready!',
-      body: 'Ding! Your $_selectedPreset baking timer has finished. Remove them from oven to cool!',
+      title: '⏱️ Timer Finished!',
+      body: 'Your $_selectedPreset timer has finished.',
       channelId: NotificationService.channelIdReminders,
       channelName: NotificationService.channelNameReminders,
     );
@@ -87,19 +87,71 @@ class _CookieTimerScreenState extends ConsumerState<CookieTimerScreen> {
         builder: (ctx) => AlertDialog(
           title: const Row(
             children: [
-              Text('🍪 ', style: TextStyle(fontSize: 26)),
-              Text('Cookies Ready!', style: TextStyle(fontFamily: 'Manrope', fontWeight: FontWeight.w700)),
+              Icon(Icons.timer_outlined, size: 26),
+              SizedBox(width: 8),
+              Text('Timer Finished!', style: TextStyle(fontFamily: 'Manrope', fontWeight: FontWeight.w700)),
             ],
           ),
-          content: Text('Your "$_selectedPreset" baking timer has reached 0:00! Check the oven now.'),
+          content: Text('Your "$_selectedPreset" timer has reached 0:00!'),
           actions: [
             FilledButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Awesome!'),
+              child: const Text('OK'),
             ),
           ],
         ),
       );
+    }
+  }
+
+  Future<void> _showCustomTimerDialog() async {
+    final minController = TextEditingController(text: '${_totalSeconds ~/ 60}');
+    final secController = TextEditingController(text: '${_totalSeconds % 60}');
+    final result = await showDialog<int>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Custom Timer', style: TextStyle(fontFamily: 'Manrope', fontWeight: FontWeight.w700)),
+        content: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: minController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Minutes'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TextField(
+                controller: secController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Seconds'),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () {
+              final mins = int.tryParse(minController.text) ?? 0;
+              final secs = int.tryParse(secController.text) ?? 0;
+              final total = (mins * 60 + secs).clamp(1, 24 * 3600);
+              Navigator.pop(ctx, total);
+            },
+            child: const Text('Set'),
+          ),
+        ],
+      ),
+    );
+    if (result != null && mounted) {
+      _timer?.cancel();
+      setState(() {
+        _selectedPreset = 'Custom (${_formatTime(result)})';
+        _totalSeconds = result;
+        _remainingSeconds = result;
+        _isRunning = false;
+      });
     }
   }
 
@@ -121,9 +173,16 @@ class _CookieTimerScreenState extends ConsumerState<CookieTimerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Cookie Baking Timer 🍪',
+          'Timer',
           style: TextStyle(fontFamily: 'Manrope', fontSize: 20, fontWeight: FontWeight.w700, color: primary),
         ),
+        actions: [
+          TextButton.icon(
+            onPressed: _showCustomTimerDialog,
+            icon: Icon(Icons.tune_rounded, size: 18, color: accent),
+            label: Text('Custom', style: TextStyle(color: accent, fontWeight: FontWeight.w600)),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(HomelySpacing.screenPadding),
@@ -149,7 +208,7 @@ class _CookieTimerScreenState extends ConsumerState<CookieTimerScreen> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('🍪', style: TextStyle(fontSize: 40)),
+                      Icon(Icons.timer_outlined, size: 36, color: accent),
                       const SizedBox(height: 4),
                       Text(
                         _formatTime(_remainingSeconds),
@@ -162,7 +221,7 @@ class _CookieTimerScreenState extends ConsumerState<CookieTimerScreen> {
                         ),
                       ),
                       Text(
-                        _isRunning ? 'Baking in progress...' : (_remainingSeconds == 0 ? 'Baking finished!' : 'Ready to bake'),
+                        _isRunning ? 'Timer running...' : (_remainingSeconds == 0 ? 'Time is up!' : 'Ready'),
                         style: TextStyle(fontSize: 12, color: secondary),
                       ),
                     ],
@@ -202,9 +261,9 @@ class _CookieTimerScreenState extends ConsumerState<CookieTimerScreen> {
 
           const SizedBox(height: HomelySpacing.xl),
 
-          // Cookie Presets
+          // Quick Presets
           Text(
-            'Cookie & Bakery Presets',
+            'Quick Presets',
             style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: primary),
           ),
           const SizedBox(height: 8),
@@ -235,7 +294,7 @@ class _CookieTimerScreenState extends ConsumerState<CookieTimerScreen> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(
-                            Icons.cookie_outlined,
+                            Icons.timer_outlined,
                             size: 20,
                             color: isSelected ? accent : secondary,
                           ),

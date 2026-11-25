@@ -157,7 +157,9 @@ class RemindersScreen extends ConsumerWidget {
             PopupMenuButton<String>(
               icon: Icon(Icons.more_vert, size: 18, color: secondary),
               onSelected: (val) async {
-                if (val == 'delete') {
+                if (val == 'edit') {
+                  context.push('/reminders/add', extra: r);
+                } else if (val == 'delete') {
                   if (r.notificationId != null) {
                     await ref.read(notificationServiceProvider).cancelNotification(r.notificationId!);
                   }
@@ -186,6 +188,7 @@ class RemindersScreen extends ConsumerWidget {
                 }
               },
               itemBuilder: (ctx) => [
+                const PopupMenuItem(value: 'edit', child: Text('Edit')),
                 const PopupMenuItem(value: 'snooze', child: Text('Snooze 1 Day')),
                 const PopupMenuItem(value: 'delete', child: Text('Delete', style: TextStyle(color: HomelyColors.danger))),
               ],

@@ -299,7 +299,9 @@ class InventoryScreen extends ConsumerWidget {
                                   PopupMenuButton<String>(
                                     icon: Icon(Icons.more_vert, size: 18, color: secondary),
                                     onSelected: (val) async {
-                                      if (val == 'delete') {
+                                      if (val == 'edit') {
+                                        context.push('/inventory/add', extra: item);
+                                      } else if (val == 'delete') {
                                         final confirmed = await HomelyConfirmDialog.show(
                                           context,
                                           title: 'Delete Item',
@@ -314,6 +316,10 @@ class InventoryScreen extends ConsumerWidget {
                                       }
                                     },
                                     itemBuilder: (ctx) => [
+                                      const PopupMenuItem(
+                                        value: 'edit',
+                                        child: Text('Edit Item'),
+                                      ),
                                       const PopupMenuItem(
                                         value: 'consume',
                                         child: Text('Mark as Consumed'),

@@ -172,7 +172,7 @@ class DashboardScreen extends ConsumerWidget {
                           const SizedBox(width: 8),
                           _buildQuickActionChip(context, '+ Reminder', () => context.push('/reminders/add'), accent, isDark),
                           const SizedBox(width: 8),
-                          _buildQuickActionChip(context, '🍪 Timer', () => context.push('/timer'), const Color(0xFFD48D3B), isDark),
+                          _buildQuickActionChip(context, '⏱️ Timer', () => context.push('/timer'), const Color(0xFFD48D3B), isDark),
                         ],
                       ),
                     ),
