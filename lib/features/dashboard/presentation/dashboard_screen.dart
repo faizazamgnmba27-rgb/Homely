@@ -8,7 +8,6 @@ import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/homely_badge.dart';
 import '../../../core/widgets/homely_card.dart';
-import '../../../core/widgets/homely_quick_add_sheet.dart';
 import '../../../core/widgets/homely_section_header.dart';
 import 'dashboard_controller.dart';
 
@@ -228,6 +227,122 @@ class DashboardScreen extends ConsumerWidget {
                               ),
                             ),
                           )),
+
+                    const SizedBox(height: HomelySpacing.md),
+
+                    // Section: Shopping & Wishlist Alerts
+                    HomelySectionHeader(
+                      title: 'Shopping & Wishlist',
+                      count: m.upcomingPurchasesCount,
+                      actionText: 'View list',
+                      onAction: () => context.push('/shopping'),
+                    ),
+                    if (m.upcomingPurchases.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: HomelyCard(
+                          onTap: () => context.push('/shopping/add'),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 38,
+                                height: 38,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF6B8FB2).withOpacity(0.12),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(Icons.favorite_border_rounded, size: 20, color: Color(0xFF6B8FB2)),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('No Pending Wishlist Items', style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: primary)),
+                                    Text('Tap to plan your next household purchase', style: TextStyle(fontSize: 11, color: secondary)),
+                                  ],
+                                ),
+                              ),
+                              Icon(Icons.add_circle_outline_rounded, size: 20, color: accent),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      ...m.upcomingPurchases.map((item) {
+                        final isHigh = item.priority.toLowerCase() == 'high';
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: HomelyCard(
+                            onTap: () => context.push('/shopping'),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 38,
+                                      height: 38,
+                                      decoration: BoxDecoration(
+                                        color: isHigh
+                                            ? HomelyColors.warning.withOpacity(0.12)
+                                            : const Color(0xFF6B8FB2).withOpacity(0.12),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Icon(
+                                        isHigh ? Icons.priority_high_rounded : Icons.favorite_rounded,
+                                        size: 20,
+                                        color: isHigh ? HomelyColors.warning : const Color(0xFF6B8FB2),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.name,
+                                          style: TextStyle(
+                                            fontFamily: 'Manrope',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: primary,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Planned: ${DateFormatter.formatDate(item.plannedPurchaseDate)} • ${item.quantity.toInt()} ${item.unit}',
+                                          style: TextStyle(fontSize: 11, color: secondary),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (item.expectedPricePaise != null && item.expectedPricePaise! > 0)
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 8),
+                                        child: Text(
+                                          CurrencyFormatter.formatPaise(item.expectedPricePaise!),
+                                          style: TextStyle(
+                                            fontFamily: 'Manrope',
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w700,
+                                            color: primary,
+                                          ),
+                                        ),
+                                      ),
+                                    HomelyBadge(
+                                      label: item.priority.toUpperCase(),
+                                      variant: isHigh ? HomelyBadgeVariant.warning : HomelyBadgeVariant.neutral,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
 
                     const SizedBox(height: HomelySpacing.md),
 

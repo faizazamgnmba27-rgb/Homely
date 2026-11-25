@@ -377,14 +377,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text('HOMELY for Android', style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: primary)),
-                    Text('Version 1.0.0 (Build 1)', style: TextStyle(fontSize: 11, color: secondary)),
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: accent.withOpacity(0.14),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.home_outlined, color: accent, size: 22),
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('HOMELY for Android', style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: primary)),
+                        Text('Version 1.0.0 Stable (Build 1)', style: TextStyle(fontSize: 11, color: secondary)),
+                      ],
+                    ),
                   ],
                 ),
-                Text('Material 3', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: accent)),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: HomelyColors.success.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: const Text('v1.0.0 Stable', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: HomelyColors.success)),
+                ),
               ],
             ),
           ),

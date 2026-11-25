@@ -74,59 +74,95 @@ class MoreScreen extends StatelessWidget {
           style: TextStyle(fontFamily: 'Manrope', fontSize: 20, fontWeight: FontWeight.w700, color: primary),
         ),
       ),
-      body: ListView.separated(
+      body: ListView(
         padding: const EdgeInsets.fromLTRB(
           HomelySpacing.screenPadding,
           HomelySpacing.xs,
           HomelySpacing.screenPadding,
           80,
         ),
-        itemCount: menuItems.length,
-        separatorBuilder: (_, __) => const SizedBox(height: HomelySpacing.sm),
-        itemBuilder: (context, index) {
-          final item = menuItems[index];
-          final color = item['color'] as Color;
-
-          return HomelyCard(
-            onTap: () => context.push(item['route'] as String),
-            child: Row(
+        children: [
+          ...menuItems.map((item) {
+            final color = item['color'] as Color;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: HomelySpacing.sm),
+              child: HomelyCard(
+                onTap: () => context.push(item['route'] as String),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.14),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(item['icon'] as IconData, color: color, size: 22),
+                    ),
+                    const SizedBox(width: HomelySpacing.sm),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item['title'] as String,
+                            style: TextStyle(
+                              fontFamily: 'Manrope',
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: primary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            item['subtitle'] as String,
+                            style: TextStyle(fontSize: 12, color: secondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.chevron_right, size: 20, color: secondary),
+                  ],
+                ),
+              ),
+            );
+          }),
+          const SizedBox(height: HomelySpacing.lg),
+          Center(
+            child: Column(
               children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.14),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(item['icon'] as IconData, color: color, size: 22),
-                ),
-                const SizedBox(width: HomelySpacing.sm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item['title'] as String,
-                        style: TextStyle(
-                          fontFamily: 'Manrope',
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: primary,
-                        ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: const BoxDecoration(
+                        color: HomelyColors.success,
+                        shape: BoxShape.circle,
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        item['subtitle'] as String,
-                        style: TextStyle(fontSize: 12, color: secondary),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'HOMELY v1.0.0 Stable',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: secondary,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Icon(Icons.chevron_right, size: 20, color: secondary),
+                const SizedBox(height: 4),
+                Text(
+                  '100% Offline • Zero-Cloud Architecture',
+                  style: TextStyle(fontSize: 11, color: secondary.withOpacity(0.7)),
+                ),
               ],
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

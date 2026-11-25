@@ -42,16 +42,17 @@ class HomelyScaffold extends StatelessWidget {
 
     return Scaffold(
       body: child,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () => HomelyQuickAddSheet.show(context),
-        elevation: 3,
+        elevation: 4,
         backgroundColor: accent,
-        shape: const CircleBorder(),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        tooltip: 'Quick Add',
         child: Icon(
-          Icons.add,
+          Icons.add_rounded,
           color: isDark ? const Color(0xFF151714) : Colors.white,
-          size: 28,
+          size: 30,
         ),
       ),
       bottomNavigationBar: Container(
@@ -63,14 +64,12 @@ class HomelyScaffold extends StatelessWidget {
           child: SizedBox(
             height: 64,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(context, 0, Icons.home_outlined, Icons.home_rounded, 'Home'),
-                _buildNavItem(context, 1, Icons.inventory_2_outlined, Icons.inventory_2_rounded, 'Inventory'),
-                const SizedBox(width: 48), // Center spacing for elevated FAB
-                _buildNavItem(context, 2, Icons.calendar_today_outlined, Icons.calendar_month_rounded, 'Calendar'),
-                _buildNavItem(context, 3, Icons.account_balance_wallet_outlined, Icons.account_balance_wallet_rounded, 'Expenses'),
-                _buildNavItem(context, 4, Icons.grid_view_outlined, Icons.grid_view_rounded, 'More'),
+                Expanded(child: _buildNavItem(context, 0, Icons.home_outlined, Icons.home_rounded, 'Home')),
+                Expanded(child: _buildNavItem(context, 1, Icons.inventory_2_outlined, Icons.inventory_2_rounded, 'Inventory')),
+                Expanded(child: _buildNavItem(context, 2, Icons.calendar_today_outlined, Icons.calendar_month_rounded, 'Calendar')),
+                Expanded(child: _buildNavItem(context, 3, Icons.account_balance_wallet_outlined, Icons.account_balance_wallet_rounded, 'Expenses')),
+                Expanded(child: _buildNavItem(context, 4, Icons.grid_view_outlined, Icons.grid_view_rounded, 'More')),
               ],
             ),
           ),
@@ -94,8 +93,7 @@ class HomelyScaffold extends StatelessWidget {
     return InkWell(
       onTap: () => _onItemTapped(context, index),
       borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
