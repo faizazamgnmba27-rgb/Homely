@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../database/app_database.dart';
+
 final notificationServiceProvider = Provider<NotificationService>((ref) {
   return NotificationService();
 });
@@ -353,6 +355,99 @@ class NotificationService {
       await _notificationsPlugin.cancelAll();
     } catch (e) {
       debugPrint('Cancel all notifications error: $e');
+    }
+  }
+
+  /// Inspect local database and trigger immediate notifications for:
+  /// - Non-empty shopping wishlist (never triggers when empty)
+  /// - Inventory items near expiry (within 15 days)
+  /// - Vehicle PUC / Insurance near expiry (within 15 days)
+  /// - Appliance / Asset service due (within 7 days)
+  /// - Bills due soon or overdue (within 3 days)
+  Future<void> checkAndTriggerAlerts(AppDatabase db) async {
+    final now = DateTime.now();
+
+    try {
+      // 1. Shopping / Wishlist (only trigger if non-empty)
+      final shoppingItems = await db.select(db.shoppingItems).get();
+      final pendingWishlist = shoppingItems.where((i) => i.status == 'planned').toList();
+      if (pendingWishlist.isNotEmpty) {
+        await showImmediateNotification(
+          id: 710001,
+          title: 'Shopping Wishlist Reminder 🛍️',
+          body: 'You have ${pendingWishlist.length} planned purchase${pendingWishlist.length > 1 ? 's' : ''} in your wishlist.',
+          channelId: channelIdShopping,
+          channelName: channelNameShopping,
+        );
+      }
+      await scheduleShoppingWishlistAlerts(pendingCount: pendingWishlist.length);
+
+      // 2. Inventory Near Expiry (within 15 days)
+      final inventoryItems = await db.select(db.inventoryItems).get();
+      final expiryThreshold = now.add(const Duration(days: 15));
+      final expiringItems = inventoryItems
+          .where((i) => i.expiryDate != null && !i.expiryDate!.isAfter(expiryThreshold))
+          .toList();
+      if (expiringItems.isNotEmpty) {
+        await showImmediateNotification(
+          id: 710002,
+          title: 'Near Expiry Alert 🍎',
+          body: '${expiringItems.length} inventory item${expiringItems.length > 1 ? 's' : ''} expiring soon (${expiringItems.first.name}).',
+          channelId: channelIdInventory,
+          channelName: channelNameInventory,
+        );
+      }
+
+      // 3. Vehicle PUC / Insurance Near Expiry (within 15 days)
+      final vehicles = await db.select(db.vehicles).get();
+      final vehicleAlerts = vehicles.where((v) {
+        final pucSoon = v.pucExpiryDate != null && !v.pucExpiryDate!.isAfter(expiryThreshold);
+        final insSoon = v.insuranceExpiryDate != null && !v.insuranceExpiryDate!.isAfter(expiryThreshold);
+        return pucSoon || insSoon;
+      }).toList();
+      if (vehicleAlerts.isNotEmpty) {
+        await showImmediateNotification(
+          id: 710003,
+          title: 'PUC / Insurance Near Expiry 🚗',
+          body: '${vehicleAlerts.length} vehicle${vehicleAlerts.length > 1 ? 's' : ''} (${vehicleAlerts.first.name}) ha${vehicleAlerts.length > 1 ? 've' : 's'} a renewal due soon.',
+          channelId: channelIdMaintenance,
+          channelName: channelNameMaintenance,
+        );
+      }
+
+      // 4. Asset / Appliance Service Due (within 7 days)
+      final assets = await db.select(db.assets).get();
+      final serviceThreshold = now.add(const Duration(days: 7));
+      final serviceDue = assets
+          .where((a) => a.nextServiceDate != null && !a.nextServiceDate!.isAfter(serviceThreshold))
+          .toList();
+      if (serviceDue.isNotEmpty) {
+        await showImmediateNotification(
+          id: 710004,
+          title: 'Service Due Alert 🔧',
+          body: '${serviceDue.length} appliance${serviceDue.length > 1 ? 's' : ''} (${serviceDue.first.name}) due for service.',
+          channelId: channelIdMaintenance,
+          channelName: channelNameMaintenance,
+        );
+      }
+
+      // 5. Bills Due Soon or Overdue (within 3 days)
+      final bills = await db.select(db.bills).get();
+      final billThreshold = now.add(const Duration(days: 3));
+      final billsDue = bills
+          .where((b) => b.status != 'paid' && !b.dueDate.isAfter(billThreshold))
+          .toList();
+      if (billsDue.isNotEmpty) {
+        await showImmediateNotification(
+          id: 710005,
+          title: 'Bill Due Reminder 💳',
+          body: '${billsDue.length} bill${billsDue.length > 1 ? 's' : ''} (${billsDue.first.title}) due soon or overdue.',
+          channelId: channelIdBills,
+          channelName: channelNameBills,
+        );
+      }
+    } catch (e) {
+      debugPrint('checkAndTriggerAlerts error: $e');
     }
   }
 }

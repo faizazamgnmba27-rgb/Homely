@@ -1,0 +1,64 @@
+{
+  "project": {
+    "name": "HOMELY",
+    "full_name": "HOMELY — Android Household Management Application",
+    "tagline": "Your home. Your data. Your control.",
+    "platform": "Android",
+    "architecture": "Feature-First Clean Architecture, 100% Offline-First",
+    "privacy_model": "On-device only (no cloud sync, no accounts, no telemetry)"
+  },
+  "tech_stack": {
+    "framework": "Flutter 3+",
+    "language": "Dart 3+",
+    "state_management": "Riverpod (flutter_riverpod)",
+    "navigation": "GoRouter (go_router) with ShellRoute 5-item navigation",
+    "database": "Drift + SQLite (sqlite3_flutter_libs, 14 normalized tables)",
+    "notifications": "flutter_local_notifications",
+    "charts": "fl_chart",
+    "typography": {
+      "headings": "Manrope (GoogleFonts.manrope)",
+      "body_and_currency": "Inter (GoogleFonts.inter)"
+    },
+    "monetary_storage": "Integer paise architecture (100 paise = ₹1.00)"
+  },
+  "modules": [
+    "Dashboard",
+    "Household Inventory",
+    "Shopping Wishlist",
+    "Bills & Subscriptions",
+    "Assets & Appliances",
+    "Vehicles & Garage",
+    "Unified Calendar",
+    "Reminder Centre",
+    "Expense Analytics",
+    "Document Vault",
+    "Settings & Backup"
+  ],
+  "design_system": {
+    "name": "Serene Domesticity",
+    "light_theme": {
+      "background": "#F7F7F2",
+      "secondary_background": "#EFEFE8",
+      "surface": "#FFFFFF",
+      "primary_text": "#20231F",
+      "secondary_text": "#777B73",
+      "accent": "#8BAF91"
+    },
+    "dark_theme": {
+      "background": "#151714",
+      "secondary_background": "#1D211D",
+      "surface": "#222720",
+      "primary_text": "#F2F3ED",
+      "secondary_text": "#A1A79E",
+      "accent": "#9BBDA0"
+    }
+  },
+  "artifacts": {
+    "presentation": "HOMELY_Presentation.pptx",
+    "presentation_generator": "generate_presentation.py",
+    "documentation": [
+      "README.md",
+      "DEVELOPMENT_PROGRESS.md"
+    ]
+  }
+}

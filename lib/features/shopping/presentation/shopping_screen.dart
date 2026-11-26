@@ -183,6 +183,7 @@ class ShoppingScreen extends ConsumerWidget {
                                             );
                                             if (confirmed == true) {
                                               await repo.deleteItem(item.id);
+                                              await _syncWishlistNotifications(ref);
                                             }
                                           },
                                         ),
@@ -249,6 +250,7 @@ class ShoppingScreen extends ConsumerWidget {
                                         );
                                         if (confirmed == true) {
                                           await repo.markAsPurchasedAndConvertToInventory(item.id);
+                                          await _syncWishlistNotifications(ref);
                                           if (context.mounted) {
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(content: Text('${item.name} moved to Inventory!')),
@@ -431,10 +433,8 @@ class _AddShoppingItemSheetState extends ConsumerState<_AddShoppingItemSheet> {
       await repo.insertItem(item);
     }
 
-    // Reschedule/ensure 2-hour repeating shopping wishlist reminders (9am - 9pm)
-    final allItems = await ref.read(shoppingRepositoryProvider).watchAllItems().first;
-    final pendingCount = allItems.where((i) => i.status == 'planned').length;
-    await ref.read(notificationServiceProvider).scheduleShoppingWishlistAlerts(pendingCount: pendingCount);
+    // Reschedule/ensure 2-hour repeating shopping wishlist reminders (9am - 9pm), or cancel if empty
+    await _syncWishlistNotifications(ref);
 
     if (mounted) Navigator.pop(context);
   }
@@ -542,4 +542,12 @@ class _AddShoppingItemSheetState extends ConsumerState<_AddShoppingItemSheet> {
       ),
     );
   }
+}
+
+/// Syncs recurring wishlist notifications with the current planned item count.
+/// Cancels all scheduled wishlist alerts when the wishlist is empty.
+Future<void> _syncWishlistNotifications(WidgetRef ref) async {
+  final allItems = await ref.read(shoppingRepositoryProvider).watchAllItems().first;
+  final pendingCount = allItems.where((i) => i.status == 'planned').length;
+  await ref.read(notificationServiceProvider).scheduleShoppingWishlistAlerts(pendingCount: pendingCount);
 }
