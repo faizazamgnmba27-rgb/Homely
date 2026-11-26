@@ -401,8 +401,8 @@ class NotificationService {
       // 3. Vehicle PUC / Insurance Near Expiry (within 15 days)
       final vehicles = await db.select(db.vehicles).get();
       final vehicleAlerts = vehicles.where((v) {
-        final pucSoon = v.pucExpiryDate != null && !v.pucExpiryDate!.isAfter(expiryThreshold);
-        final insSoon = v.insuranceExpiryDate != null && !v.insuranceExpiryDate!.isAfter(expiryThreshold);
+        final pucSoon = !v.pucExpiry.isAfter(expiryThreshold);
+        final insSoon = !v.insuranceExpiry.isAfter(expiryThreshold);
         return pucSoon || insSoon;
       }).toList();
       if (vehicleAlerts.isNotEmpty) {
@@ -441,7 +441,7 @@ class NotificationService {
         await showImmediateNotification(
           id: 710005,
           title: 'Bill Due Reminder 💳',
-          body: '${billsDue.length} bill${billsDue.length > 1 ? 's' : ''} (${billsDue.first.title}) due soon or overdue.',
+          body: '${billsDue.length} bill${billsDue.length > 1 ? 's' : ''} (${billsDue.first.name}) due soon or overdue.',
           channelId: channelIdBills,
           channelName: channelNameBills,
         );
