@@ -1,10 +1,13 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../app/theme/homely_colors.dart';
 import '../../../core/constants/spacing.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/services/sms_bill_parser.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/homely_badge.dart';
@@ -15,6 +18,137 @@ import 'bills_controller.dart';
 
 class BillsScreen extends ConsumerWidget {
   const BillsScreen({Key? key}) : super(key: key);
+
+  Future<void> _importBillsFromSms(BuildContext context, WidgetRef ref) async {
+    try {
+      final parsed = await SmsBillParser.fetchAndParseBills();
+      if (!context.mounted) return;
+      if (parsed.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No credit card or utility bill SMS found.')),
+        );
+        return;
+      }
+
+      final selected = List<bool>.filled(parsed.length, true);
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (ctx) {
+          final isDark = Theme.of(ctx).brightness == Brightness.dark;
+          final primary = isDark ? HomelyColors.darkTextPrimary : HomelyColors.lightTextPrimary;
+          final secondary = isDark ? HomelyColors.darkTextSecondary : HomelyColors.lightTextSecondary;
+          final accent = isDark ? HomelyColors.darkAccent : HomelyColors.lightAccent;
+
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return Container(
+                constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
+                decoration: BoxDecoration(
+                  color: isDark ? HomelyColors.darkCard : HomelyColors.lightCard,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(HomelySpacing.sheetRadius)),
+                ),
+                padding: const EdgeInsets.fromLTRB(
+                  HomelySpacing.screenPadding,
+                  HomelySpacing.md,
+                  HomelySpacing.screenPadding,
+                  HomelySpacing.lg,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Detected Bills from SMS (${parsed.length})',
+                      style: TextStyle(fontFamily: 'Manrope', fontSize: 18, fontWeight: FontWeight.w700, color: primary),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Select the bills you want to add to your Bills section.',
+                      style: TextStyle(fontSize: 12, color: secondary),
+                    ),
+                    const SizedBox(height: HomelySpacing.sm),
+                    Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: parsed.length,
+                        itemBuilder: (c, i) {
+                          final b = parsed[i];
+                          return CheckboxListTile(
+                            value: selected[i],
+                            activeColor: accent,
+                            contentPadding: EdgeInsets.zero,
+                            onChanged: (v) => setState(() => selected[i] = v ?? false),
+                            title: Text(b.name, style: TextStyle(fontWeight: FontWeight.w600, color: primary)),
+                            subtitle: Text(
+                              'Due ${DateFormatter.formatShortDate(b.dueDate)} • ${b.category}',
+                              style: TextStyle(fontSize: 12, color: secondary),
+                            ),
+                            secondary: Text(
+                              CurrencyFormatter.formatPaise(b.amountPaise),
+                              style: TextStyle(fontWeight: FontWeight.w700, color: primary),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: HomelySpacing.md),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed: () async {
+                          final repo = ref.read(billsRepositoryProvider);
+                          final now = DateTime.now();
+                          int added = 0;
+                          for (int i = 0; i < parsed.length; i++) {
+                            if (!selected[i]) continue;
+                            final b = parsed[i];
+                            await repo.insertBill(
+                              BillsCompanion.insert(
+                                id: const Uuid().v4(),
+                                name: b.name,
+                                provider: b.provider,
+                                category: b.category,
+                                expectedAmountPaise: b.amountPaise,
+                                dueDate: b.dueDate,
+                                notes: drift.Value('Imported from SMS: ${b.rawBody}'),
+                                createdAt: now,
+                                updatedAt: now,
+                              ),
+                            );
+                            added++;
+                          }
+                          if (ctx.mounted) Navigator.pop(ctx);
+                          if (context.mounted && added > 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Added $added bill(s) from SMS!')),
+                            );
+                          }
+                        },
+                        style: FilledButton.styleFrom(
+                          backgroundColor: accent,
+                          foregroundColor: isDark ? const Color(0xFF151714) : Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        child: const Text('Add Selected to Bills', style: TextStyle(fontWeight: FontWeight.w700)),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not read SMS: $e')),
+        );
+      }
+    }
+  }
 
   void _showMarkPaidModal(BuildContext context, WidgetRef ref, Bill bill) {
     final amountController = TextEditingController(
@@ -141,6 +275,11 @@ class BillsScreen extends ConsumerWidget {
           ),
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.sms_outlined, color: accent, size: 22),
+            tooltip: 'Fetch Bills from SMS',
+            onPressed: () => _importBillsFromSms(context, ref),
+          ),
           IconButton(
             icon: Icon(Icons.add_circle_outline, color: accent, size: 24),
             tooltip: 'Add Bill',
